@@ -15,13 +15,14 @@ export const CitaClienteComponent = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [currentCita, setCurrentCita] = useState({
-    idCliente: '1', // Este ID debe ser dinámico si el cliente está autenticado
+    idCliente: '1',
     idEmpleado: '',
     idServicio: '',
     fechaHora: new Date(),
     estado: 'PROGRAMADA',
   });
   const [error, setError] = useState(null);
+  const [debugInfo, setDebugInfo] = useState(null); // Para depuración
 
   useEffect(() => {
     setIsLoading(true);
@@ -46,17 +47,47 @@ export const CitaClienteComponent = () => {
     }
 
     setIsLoading(true);
+    console.log(`Cargando empleados para el servicio ID: ${idServicio}`);
+    
     return getEmpleadosPorServicio(idServicio)
       .then((response) => {
-        console.log("Datos de empleados por servicio:", response.data);
-        // Transformamos los datos si es necesario
-        const empleadosFormateados = response.data.map(item => ({
-          idEmpleado: item.idEmpleado,
-          nombreEmpleado: item.nombreEmpleado,
-          // Agregamos otros campos que podrían estar disponibles
-          especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
-        }));
-        setEmpleados(empleadosFormateados);
+        console.log(`Respuesta completa para servicio ${idServicio}:`, response);
+        
+        // Guardar la respuesta original para depuración
+        setDebugInfo({
+          idServicio: idServicio,
+          apiResponse: response.data
+        });
+        
+        if (Array.isArray(response.data)) {
+          console.log(`Se encontraron ${response.data.length} empleados para el servicio ${idServicio}`);
+          
+          // IMPORTANTE: Filtrado manual en caso de que la API no esté filtrando
+          // Solo incluir empleados que tengan idServicio igual al seleccionado
+          const empleadosFiltrados = response.data.filter(emp => 
+            emp.idServicio === parseInt(idServicio) || 
+            emp.idServicio === idServicio
+          );
+          
+          console.log(`Después de filtrar manualmente, quedan ${empleadosFiltrados.length} empleados`);
+          
+          const empleadosFormateados = empleadosFiltrados.map(item => ({
+            idEmpleado: item.idEmpleado,
+            nombreEmpleado: item.nombreEmpleado,
+            especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
+          }));
+          
+          setEmpleados(empleadosFormateados);
+          if (empleadosFormateados.length === 0) {
+            setError(`No hay especialistas disponibles para este servicio (ID: ${idServicio})`);
+          } else {
+            setError(null);
+          }
+        } else {
+          console.error("La respuesta de la API no es un array:", response.data);
+          setEmpleados([]);
+          setError("Formato de respuesta inesperado de la API");
+        }
         setIsLoading(false);
       })
       .catch((err) => {
@@ -94,7 +125,7 @@ export const CitaClienteComponent = () => {
       idCliente: parseInt(currentCita.idCliente) || 1,
       idEmpleado: parseInt(currentCita.idEmpleado),
       idServicio: parseInt(currentCita.idServicio),
-      fechaHora: currentCita.fechaHora.toISOString().slice(0, 16),
+      fechaHora: currentCita.fechaHora.toISOString().slice(0, 19), // Formato: YYYY-MM-DDTHH:MM:SS
       estado: currentCita.estado
     };
 
@@ -116,7 +147,6 @@ export const CitaClienteComponent = () => {
         setIsLoading(false);
         setCurrentStep(1);
         
-        // Ocultar el mensaje de éxito después de 5 segundos
         setTimeout(() => {
           setShowSuccess(false);
         }, 5000);
@@ -168,6 +198,21 @@ export const CitaClienteComponent = () => {
   const moveToPreviousStep = () => {
     setError(null);
     setCurrentStep(currentStep - 1);
+  };
+
+  // Para depuración - muestra esto solo en desarrollo
+  const renderDebugInfo = () => {
+    if (!debugInfo) return null;
+    
+    return (
+      <div style={{ margin: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', fontSize: '12px' }}>
+        <h4>Información de Depuración</h4>
+        <p>Servicio seleccionado: {debugInfo.idServicio}</p>
+        <p>Empleados recibidos de API: {Array.isArray(debugInfo.apiResponse) ? debugInfo.apiResponse.length : 'N/A'}</p>
+        <p>Empleados en pantalla: {empleados.length}</p>
+        <pre>{JSON.stringify(debugInfo.apiResponse, null, 2)}</pre>
+      </div>
+    );
   };
 
   return (
@@ -348,6 +393,9 @@ export const CitaClienteComponent = () => {
             </div>
           </>
         )}
+        
+        {/* Solo mostrar en desarrollo */}
+        {process.env.NODE_ENV !== 'production' && renderDebugInfo()}
       </div>
     </div>
   );
