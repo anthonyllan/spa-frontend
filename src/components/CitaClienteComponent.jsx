@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { listServicios, guardarCita, getEmpleadosPorServicio } from '../services/CitaCliente';
+import { listServicios, guardarCita, getEmpleadosPorServicio, getEmpleadoServicioAsignaciones } from '../services/CitaCliente';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,6 +11,7 @@ registerLocale('es', es);
 export const CitaClienteComponent = () => {
   const [servicios, setServicios] = useState([]);
   const [empleados, setEmpleados] = useState([]);
+  const [empleadoServicioMapping, setEmpleadoServicioMapping] = useState([]); // Nueva variable para almacenar asignaciones
   const [isLoading, setIsLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -24,20 +25,72 @@ export const CitaClienteComponent = () => {
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
 
+  // Cargar servicios y asignaciones de empleado-servicio al inicio
   useEffect(() => {
     setIsLoading(true);
-    listServicios()
-      .then((response) => {
-        console.log("Datos de servicios:", response.data);
-        setServicios(response.data);
+    
+    // Cargar primero las asignaciones de empleado-servicio
+    Promise.all([
+      listServicios(),
+      getEmpleadoServicioAsignaciones() // Esta es una nueva llamada para obtener las asignaciones
+    ])
+      .then(([serviciosResponse, asignacionesResponse]) => {
+        console.log("Datos de servicios:", serviciosResponse.data);
+        setServicios(serviciosResponse.data);
+        
+        // Guardar las asignaciones de empleado-servicio si están disponibles
+        if (asignacionesResponse && asignacionesResponse.data) {
+          console.log("Datos de asignaciones empleado-servicio:", asignacionesResponse.data);
+          setEmpleadoServicioMapping(asignacionesResponse.data);
+        }
+        
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error("Error obteniendo servicios:", err);
-        setError(err.message || "Error al cargar los servicios");
-        setIsLoading(false);
+        console.error("Error obteniendo datos iniciales:", err);
+        
+        // Si falla la carga de asignaciones, intentamos al menos cargar los servicios
+        listServicios()
+          .then((response) => {
+            setServicios(response.data);
+            setIsLoading(false);
+          })
+          .catch((servErr) => {
+            setError("Error al cargar los servicios: " + servErr.message);
+            setIsLoading(false);
+          });
       });
   }, []);
+
+  // Esta función verifica si un empleado está asignado a un servicio específico
+  const empleadoTieneServicio = (idEmpleado, idServicio) => {
+    // Si tenemos los datos de asignación, los usamos para verificar
+    if (empleadoServicioMapping && empleadoServicioMapping.length > 0) {
+      return empleadoServicioMapping.some(
+        asignacion => 
+          (asignacion.idEmpleado === parseInt(idEmpleado) || asignacion.idEmpleado === idEmpleado) &&
+          (asignacion.idServicio === parseInt(idServicio) || asignacion.idServicio === idServicio)
+      );
+    }
+    
+    // Datos hardcodeados como fallback cuando no se puede obtener la API de asignaciones
+    // Este es un arreglo temporal hasta que la API esté disponible
+    const asignacionesHardcoded = [
+      { idEmpleado: 3, idServicio: 1 }, // Karen - Corte y Peinado
+      { idEmpleado: 3, idServicio: 4 }, // Karen - Hidratación facial
+      { idEmpleado: 4, idServicio: 1 }, // Judith - Corte y Peinado
+      { idEmpleado: 4, idServicio: 3 }, // Judith - Uñas acrílicas
+      { idEmpleado: 5, idServicio: 1 }, // Anthony - Corte y Peinado
+      { idEmpleado: 6, idServicio: 5 }, // Hander - Servicio ID 5
+    ];
+    
+    // Buscar en los datos hardcodeados
+    return asignacionesHardcoded.some(
+      asignacion => 
+        (asignacion.idEmpleado === parseInt(idEmpleado) || asignacion.idEmpleado === idEmpleado) &&
+        (asignacion.idServicio === parseInt(idServicio) || asignacion.idServicio === idServicio)
+    );
+  };
 
   // Esta función carga los empleados que ofrecen un servicio específico
   const cargarEmpleadosPorServicio = (idServicio) => {
@@ -60,17 +113,21 @@ export const CitaClienteComponent = () => {
         });
         
         if (Array.isArray(response.data)) {
-          console.log(`Se encontraron ${response.data.length} empleados para el servicio ${idServicio}`);
+          console.log(`Se encontraron ${response.data.length} empleados en total`);
           
-          // IMPORTANTE: Ya no filtramos porque la API ya devuelve solo los empleados del servicio
-          // La API devuelve los empleados correctos para el servicio
-          const empleadosFormateados = response.data.map(item => ({
+          // IMPORTANTE: Filtrar empleados que están asignados a este servicio específico
+          const empleadosFiltrados = response.data.filter(empleado => 
+            empleadoTieneServicio(empleado.idEmpleado, idServicio)
+          );
+          
+          console.log(`Después de filtrar, quedan ${empleadosFiltrados.length} empleados para el servicio ${idServicio}`);
+          
+          const empleadosFormateados = empleadosFiltrados.map(item => ({
             idEmpleado: item.idEmpleado,
             nombreEmpleado: item.nombreEmpleado,
+            apellidosEmpleado: item.apellidosEmpleado,
             especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
           }));
-          
-          console.log("Empleados formateados:", empleadosFormateados);
           
           setEmpleados(empleadosFormateados);
           if (empleadosFormateados.length === 0) {
@@ -208,6 +265,7 @@ export const CitaClienteComponent = () => {
           <summary>Ver datos completos</summary>
           <pre style={{ maxHeight: '300px', overflow: 'auto' }}>{JSON.stringify(debugInfo.apiResponse, null, 2)}</pre>
         </details>
+        <p>Usando mapeo hardcoded: {empleadoServicioMapping.length === 0 ? "Sí" : "No"}</p>
       </div>
     );
   };

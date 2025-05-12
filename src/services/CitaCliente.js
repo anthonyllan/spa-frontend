@@ -21,5 +21,14 @@ export const guardarCita = (cita) => axiosInstance.post(REST_API_BASE_URL_CITAS,
 
 export const listServicios = () => axiosInstance.get(REST_API_BASE_URL_SERVICIOS);
 
+// Obtiene todos los empleados (sin filtrar)
 export const getEmpleadosPorServicio = (idServicio) =>
     axiosInstance.get(`${SERVICIO_API_URL}/api/empleado-servicio/servicio/${idServicio}/empleados`);
+
+// Obtiene las asignaciones de empleados a servicios
+export const getEmpleadoServicioAsignaciones = () =>
+    axiosInstance.get(`${SERVICIO_API_URL}/api/empleado-servicio`);
+
+// Verifica si un empleado está asignado a un servicio específico
+export const verificarEmpleadoServicio = (idEmpleado, idServicio) =>
+    axiosInstance.get(`${SERVICIO_API_URL}/api/empleado-servicio/validar/${idEmpleado}/${idServicio}`);
