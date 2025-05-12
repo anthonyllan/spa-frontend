@@ -22,7 +22,7 @@ export const CitaClienteComponent = () => {
     estado: 'PROGRAMADA',
   });
   const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState(null); // Para depuración
+  const [debugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -62,20 +62,15 @@ export const CitaClienteComponent = () => {
         if (Array.isArray(response.data)) {
           console.log(`Se encontraron ${response.data.length} empleados para el servicio ${idServicio}`);
           
-          // IMPORTANTE: Filtrado manual en caso de que la API no esté filtrando
-          // Solo incluir empleados que tengan idServicio igual al seleccionado
-          const empleadosFiltrados = response.data.filter(emp => 
-            emp.idServicio === parseInt(idServicio) || 
-            emp.idServicio === idServicio
-          );
-          
-          console.log(`Después de filtrar manualmente, quedan ${empleadosFiltrados.length} empleados`);
-          
-          const empleadosFormateados = empleadosFiltrados.map(item => ({
+          // IMPORTANTE: Ya no filtramos porque la API ya devuelve solo los empleados del servicio
+          // La API devuelve los empleados correctos para el servicio
+          const empleadosFormateados = response.data.map(item => ({
             idEmpleado: item.idEmpleado,
             nombreEmpleado: item.nombreEmpleado,
             especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
           }));
+          
+          console.log("Empleados formateados:", empleadosFormateados);
           
           setEmpleados(empleadosFormateados);
           if (empleadosFormateados.length === 0) {
@@ -100,14 +95,13 @@ export const CitaClienteComponent = () => {
         }
         
         setError(errorMsg);
-        setEmpleados([]); // Aseguramos que la lista de empleados quede vacía en caso de error
+        setEmpleados([]);
         setIsLoading(false);
       });
   };
 
   const handleServicioChange = (idServicio) => {
     setCurrentCita({ ...currentCita, idServicio, idEmpleado: '' });
-    // No cargamos los empleados aquí, lo haremos al avanzar al paso 2
   };
 
   const handleDateChange = (date) => {
@@ -125,7 +119,7 @@ export const CitaClienteComponent = () => {
       idCliente: parseInt(currentCita.idCliente) || 1,
       idEmpleado: parseInt(currentCita.idEmpleado),
       idServicio: parseInt(currentCita.idServicio),
-      fechaHora: currentCita.fechaHora.toISOString().slice(0, 19), // Formato: YYYY-MM-DDTHH:MM:SS
+      fechaHora: currentCita.fechaHora.toISOString().slice(0, 19),
       estado: currentCita.estado
     };
 
@@ -205,12 +199,15 @@ export const CitaClienteComponent = () => {
     if (!debugInfo) return null;
     
     return (
-      <div style={{ margin: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', fontSize: '12px' }}>
+      <div style={{ margin: '20px', padding: '10px', border: '1px solid #ddd', backgroundColor: '#f9f9f9', borderRadius: '5px', fontSize: '12px' }}>
         <h4>Información de Depuración</h4>
         <p>Servicio seleccionado: {debugInfo.idServicio}</p>
         <p>Empleados recibidos de API: {Array.isArray(debugInfo.apiResponse) ? debugInfo.apiResponse.length : 'N/A'}</p>
         <p>Empleados en pantalla: {empleados.length}</p>
-        <pre>{JSON.stringify(debugInfo.apiResponse, null, 2)}</pre>
+        <details>
+          <summary>Ver datos completos</summary>
+          <pre style={{ maxHeight: '300px', overflow: 'auto' }}>{JSON.stringify(debugInfo.apiResponse, null, 2)}</pre>
+        </details>
       </div>
     );
   };
@@ -394,8 +391,8 @@ export const CitaClienteComponent = () => {
           </>
         )}
         
-        {/* Solo mostrar en desarrollo */}
-        {process.env.NODE_ENV !== 'production' && renderDebugInfo()}
+        {/* Panel de depuración mejorado */}
+        {renderDebugInfo()}
       </div>
     </div>
   );
