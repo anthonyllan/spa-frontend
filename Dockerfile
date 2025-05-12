@@ -28,9 +28,16 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copiar archivos de construcción de Vite a nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Copiar explícitamente los favicons a la raíz del sitio
+COPY --from=build /app/public/favicon.ico /usr/share/nginx/html/favicon.ico
+COPY --from=build /app/public/favicon.png /usr/share/nginx/html/favicon.png
+COPY --from=build /app/public/apple-touch-icon.png /usr/share/nginx/html/apple-touch-icon.png
+
 # Para depuración - listar archivos copiados
 RUN ls -la /usr/share/nginx/html
 RUN ls -la /usr/share/nginx/html/assets || echo "No assets directory found"
+# Verificar que los favicon estén presentes
+RUN ls -la /usr/share/nginx/html/favicon* || echo "No favicon files found"
 
 EXPOSE 80
 
