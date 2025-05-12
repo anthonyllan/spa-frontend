@@ -3,7 +3,6 @@ import { listEmpleados, createEmpleado, updateEmpleado, deleteEmpleado } from '.
 import { listEspecialidades } from '../services/EspecialidadService'; // Importa el servicio para especialidades
 import { Modal, Button, Form } from 'react-bootstrap';
 
-
 export const ListEmpleados = () => {
   const [empleados, setEmpleados] = useState([]);
   const [especialidades, setEspecialidades] = useState([]); // Estado para las especialidades
@@ -18,6 +17,24 @@ export const ListEmpleados = () => {
     correoEmpleado: '',
     idEspecialidad: '' // Ahora seleccionaremos desde un menú desplegable
   });
+
+  // Función para cargar la lista de empleados
+  const fetchEmpleados = () => {
+    listEmpleados()
+      .then((response) => {
+        setEmpleados(
+          response.data.map((empleado) => ({
+            ...empleado,
+            idEspecialidad: empleado.especialidad ? empleado.especialidad.idEspecialidad : ''
+          }))
+        );
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Error fetching empleados:", err);
+        setError('Error al cargar la lista de empleados.');
+      });
+  };
 
   useEffect(() => {
     // Cargar empleados y especialidades al iniciar
@@ -82,30 +99,69 @@ export const ListEmpleados = () => {
       return;
     }
 
+    // Formato correcto para el objeto empleado que se enviará a la API
     const empleadoDataToSend = {
-      ...currentEmpleado,
-      idEspecialidad: currentEmpleado.idEspecialidad ? parseInt(currentEmpleado.idEspecialidad, 10) : null
+      nombreEmpleado: currentEmpleado.nombreEmpleado,
+      apellidosEmpleado: currentEmpleado.apellidosEmpleado,
+      telefonoEmpleado: currentEmpleado.telefonoEmpleado,
+      correoEmpleado: currentEmpleado.correoEmpleado,
+      especialidad: {
+        idEspecialidad: currentEmpleado.idEspecialidad ? parseInt(currentEmpleado.idEspecialidad, 10) : null
+      }
     };
+
+    // Si es una edición, incluir el ID del empleado
+    if (modalType === 'edit') {
+      empleadoDataToSend.idEmpleado = currentEmpleado.idEmpleado;
+    }
+
+    console.log("Datos a enviar:", empleadoDataToSend); // Para depuración
 
     if (modalType === 'add') {
       createEmpleado(empleadoDataToSend)
-        .then(() => {
+        .then((response) => {
+          console.log("Respuesta del servidor:", response.data); // Para depuración
           fetchEmpleados();
           handleCloseModal();
         })
         .catch((err) => {
-          console.error("Error creating empleado:", err);
-          setError(err.response?.data?.message || 'Error al crear el empleado.');
+          console.error("Error completo:", err);
+          let errorMsg = 'Error al crear el empleado.';
+          
+          if (err.response) {
+            console.error("Datos del error:", err.response.data);
+            console.error("Estado del error:", err.response.status);
+            errorMsg = err.response.data?.message || `Error ${err.response.status}: ${err.message}`;
+          } else if (err.request) {
+            errorMsg = 'No se recibió respuesta del servidor';
+          } else {
+            errorMsg = err.message;
+          }
+          
+          setError(errorMsg);
         });
     } else if (modalType === 'edit') {
       updateEmpleado(currentEmpleado.idEmpleado, empleadoDataToSend)
-        .then(() => {
+        .then((response) => {
+          console.log("Respuesta del servidor:", response.data);
           fetchEmpleados();
           handleCloseModal();
         })
         .catch((err) => {
-          console.error("Error updating empleado:", err);
-          setError(err.response?.data?.message || 'Error al actualizar el empleado.');
+          console.error("Error completo:", err);
+          let errorMsg = 'Error al actualizar el empleado.';
+          
+          if (err.response) {
+            console.error("Datos del error:", err.response.data);
+            console.error("Estado del error:", err.response.status);
+            errorMsg = err.response.data?.message || `Error ${err.response.status}: ${err.message}`;
+          } else if (err.request) {
+            errorMsg = 'No se recibió respuesta del servidor';
+          } else {
+            errorMsg = err.message;
+          }
+          
+          setError(errorMsg);
         });
     }
   };
@@ -155,9 +211,11 @@ export const ListEmpleados = () => {
                   <td>{empleado.telefonoEmpleado}</td>
                   <td>
                     {
+                      empleado.especialidad?.nombreEspecialidad || 
                       especialidades.find(
                         (esp) => esp.idEspecialidad === empleado.idEspecialidad
-                      )?.nombreEspecialidad || 'Sin especialidad'
+                      )?.nombreEspecialidad || 
+                      'Sin especialidad'
                     }
                   </td>
                   <td>
