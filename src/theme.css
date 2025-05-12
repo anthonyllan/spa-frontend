@@ -1,0 +1,181 @@
+:root {
+    /* Paleta de colores principal */
+    --primary-color: #6A8D92;      /* Verde azulado suave - color principal */
+    --secondary-color: #F4D6CC;    /* Rosa melocotón suave - color secundario */
+    --accent-color: #E29578;       /* Coral - color de acento/llamadas a la acción */
+    --background-light: #F9F7F3;   /* Crema claro - fondo general */
+    --background-white: #FFFFFF;   /* Blanco - elementos de contenido */
+    
+    /* Colores de texto */
+    --text-dark: #2C3639;          /* Casi negro - texto principal */
+    --text-medium: #535E65;        /* Gris oscuro - texto secundario */
+    --text-light: #768088;         /* Gris claro - texto terciario */
+    
+    /* Colores de estado */
+    --success: #7FB685;            /* Verde suave */
+    --warning: #F2C57C;            /* Amarillo suave */
+    --danger: #DD7373;             /* Rojo suave */
+    
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Bordes redondeados */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+    
+    /* Transiciones */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Fuentes */
+    --font-primary: 'Montserrat', sans-serif;
+    --font-secondary: 'Playfair Display', serif;
+    --font-accent: 'Cormorant Garamond', serif;
+  }
+  
+  /* Estilos de reset global */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-primary);
+    color: var(--text-dark);
+    background-color: var(--background-light);
+    line-height: 1.6;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-secondary);
+    margin-top: 0;
+    font-weight: 500;
+  }
+  
+  /* Contenedor principal */
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Botones */
+  .btn {
+    font-family: var(--font-primary);
+    font-weight: 500;
+    border-radius: var(--border-radius-md);
+    padding: 0.6rem 1.2rem;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    display: inline-block;
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #5a7a7e; /* Oscurecer para hover */
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-accent {
+    background-color: var(--accent-color);
+    color: white;
+  }
+  
+  .btn-accent:hover {
+    background-color: #d38569; /* Oscurecer para hover */
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-light {
+    background-color: var(--background-white);
+    color: var(--text-dark);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .btn-light:hover {
+    background-color: #f3f3f3;
+  }
+  
+  /* Tarjetas */
+  .card {
+    background-color: var(--background-white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    transition: box-shadow var(--transition-normal);
+  }
+  
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  /* Formularios */
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-medium);
+    font-weight: 500;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius-md);
+    background-color: white;
+    transition: border-color var(--transition-normal);
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 141, 146, 0.2);
+  }
+  
+  /* Títulos elegantes con subrayado */
+  .elegant-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-dark);
+  }
+  
+  .elegant-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background-color: var(--accent-color);
+  }

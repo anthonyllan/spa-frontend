@@ -1,0 +1,132 @@
+/* --- ListEmpleados.css --- */
+
+/* Aplica una fuente base más similar a la imagen */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f9fafb; /* Un fondo ligeramente gris como en la imagen */
+  }
+  
+  /* Contenedor principal si quieres centrar o dar márgenes */
+  .container {
+    background-color: #ffffff; /* Fondo blanco para el contenido principal */
+    padding: 20px;
+    border-radius: 8px; /* Bordes redondeados como en la imagen */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 1100px; /* Limita el ancho máximo */
+    margin: 2rem auto; /* Centra el contenedor */
+  }
+  
+  /* Estilo general de la tabla */
+  .table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina espacios entre bordes */
+    margin-top: 1.5rem; /* Espacio sobre la tabla */
+    font-size: 0.875rem; /* Tamaño de fuente similar */
+    color: #374151; /* Color de texto principal (gris oscuro) */
+    border: 1px solid #e5e7eb; /* Borde exterior ligero */
+    border-radius: 6px; /* Bordes redondeados para la tabla */
+    overflow: hidden; /* Para que el border-radius afecte a a th/td */
+  }
+  
+  /* Elimina el estilo 'striped' de Bootstrap si lo tienes */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #ffffff; /* Fondo blanco para todas las filas */
+  }
+  
+  /* Estilo del encabezado de la tabla (thead) */
+  .table thead th {
+    background-color: #f9fafb; /* Fondo muy ligero para el encabezado */
+    border-bottom: 1px solid #e5e7eb; /* Borde inferior para separar del cuerpo */
+    padding: 12px 16px; /* Padding generoso */
+    text-align: left; /* Alineación a la izquierda */
+    font-weight: 500; /* Peso de fuente medio */
+    color: #6b7280; /* Color de texto del encabezado (gris medio) */
+    text-transform: none; /* Sin mayúsculas */
+    font-size: 0.75rem; /* Un poco más pequeño */
+    letter-spacing: 0.05em; /* Espaciado ligero */
+  }
+  
+  /* Estilo de las celdas del cuerpo (tbody td) */
+  .table tbody td {
+    padding: 12px 16px; /* Padding consistente con el encabezado */
+    border-bottom: 1px solid #e5e7eb; /* Línea divisoria sutil entre filas */
+    vertical-align: middle; /* Centra verticalmente el contenido */
+    line-height: 1.4;
+  }
+  
+  /* Elimina el borde inferior de la última fila */
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  /* Efecto hover en las filas */
+  .table tbody tr:hover {
+    background-color: #f9fafb; /* Un ligero cambio de fondo al pasar el ratón */
+  }
+  
+  /* Estilo específico para la primera columna (simulando el '#') */
+  .table td:first-child {
+      color: #6b7280; /* Color gris como en la imagen */
+      font-weight: 500;
+      /* text-align: center; /* Podrías centrarlo si prefieres */
+  }
+  
+  
+  /* Estilo de los botones dentro de la tabla (Acciones) */
+  .table td .btn {
+    padding: 4px 10px; /* Botones más pequeños */
+    font-size: 0.8rem; /* Texto más pequeño */
+    margin-right: 5px; /* Espacio entre botones */
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    border: 1px solid transparent; /* Quita borde por defecto si lo hay */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  /* Botón Editar (Warning) */
+  .table td .btn-warning {
+    background-color: #fef3c7; /* Fondo amarillo pálido */
+    color: #92400e; /* Texto amarillo oscuro */
+    border-color: #fde68a; /* Borde amarillo */
+  }
+  .table td .btn-warning:hover {
+    background-color: #fde68a;
+    border-color: #fcd34d;
+  }
+  
+  /* Botón Eliminar (Danger) */
+  .table td .btn-danger {
+     background-color: #fee2e2; /* Fondo rojo pálido */
+     color: #991b1b; /* Texto rojo oscuro */
+     border-color: #fecaca; /* Borde rojo */
+  }
+  .table td .btn-danger:hover {
+    background-color: #fecaca;
+    border-color: #fca5a5;
+  }
+  
+  
+  /* Botón "Agregar Empleado" (fuera de la tabla) */
+  .btn-primary {
+      background-color: #4f46e5; /* Un azul/morado similar al de otros elementos */
+      border-color: #4f46e5;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+      background-color: #4338ca;
+      border-color: #4338ca;
+  }
+  
+  /* Título H2 */
+  h2 {
+      font-size: 1.5rem; /* Tamaño del título */
+      font-weight: 600; /* Peso del título */
+      color: #111827; /* Color oscuro para el título */
+      margin-bottom: 1.5rem; /* Espacio debajo del título */
+  }
+  
+  /* --- Fin ListEmpleados.css --- */
