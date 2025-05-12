@@ -27,29 +27,46 @@ export const CitaClienteComponent = () => {
     setIsLoading(true);
     listServicios()
       .then((response) => {
+        console.log("Datos de servicios:", response.data);
         setServicios(response.data);
         setIsLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
+        console.error("Error obteniendo servicios:", err);
+        setError(err.message || "Error al cargar los servicios");
         setIsLoading(false);
       });
   }, []);
 
-  const handleServicioChange = (e) => {
-    const idServicio = e.target.value;
+  const handleServicioChange = (idServicio) => {
     setCurrentCita({ ...currentCita, idServicio, idEmpleado: '' });
     
     if (idServicio) {
       setIsLoading(true);
       getEmpleadosPorServicio(idServicio)
         .then((response) => {
-          setEmpleados(response.data);
+          console.log("Datos de empleados por servicio:", response.data);
+          // Transformamos los datos si es necesario
+          const empleadosFormateados = response.data.map(item => ({
+            idEmpleado: item.idEmpleado,
+            nombreEmpleado: item.nombreEmpleado,
+            // Agregamos otros campos que podrían estar disponibles
+            especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
+          }));
+          setEmpleados(empleadosFormateados);
           setIsLoading(false);
         })
         .catch((err) => {
-          console.error("Error obteniendo empleados:", err);
-          setError("No se pudo obtener la lista de empleados para el servicio seleccionado.");
+          console.error("Error completo obteniendo empleados:", err);
+          let errorMsg = "No se pudo obtener la lista de empleados para el servicio seleccionado.";
+          
+          if (err.response) {
+            console.error("Datos del error:", err.response.data);
+            errorMsg += " " + (err.response.data.message || `Error ${err.response.status}`);
+          }
+          
+          setError(errorMsg);
+          setEmpleados([]); // Aseguramos que la lista de empleados quede vacía en caso de error
           setIsLoading(false);
         });
     } else {
@@ -69,7 +86,8 @@ export const CitaClienteComponent = () => {
 
     setIsLoading(true);
     guardarCita(currentCita)
-      .then(() => {
+      .then((response) => {
+        console.log("Cita creada exitosamente:", response.data);
         setShowSuccess(true);
         setCurrentCita({
           idCliente: '1',
@@ -88,17 +106,20 @@ export const CitaClienteComponent = () => {
         }, 5000);
       })
       .catch((err) => {
-        setError(err.message);
+        console.error("Error al guardar cita:", err);
+        setError(err.message || "Error al agendar la cita");
         setIsLoading(false);
       });
   };
 
   const getServicioById = (id) => {
-    return servicios.find(servicio => servicio.idServicio === id);
+    return servicios.find(servicio => servicio.idServicio === parseInt(id) || servicio.idServicio === id);
   };
 
   const getEmpleadoById = (id) => {
-    return empleados.find(empleado => empleado.idEmpleado === id);
+    return empleados.find(empleado => 
+      empleado.idEmpleado === parseInt(id) || empleado.idEmpleado === id
+    );
   };
 
   const moveToNextStep = () => {
@@ -109,6 +130,11 @@ export const CitaClienteComponent = () => {
     if (currentStep === 2 && !currentCita.idEmpleado) {
       setError("Por favor, selecciona un empleado");
       return;
+    }
+    
+    // Si estamos en el paso 1 y vamos a avanzar al paso 2, cargar los empleados
+    if (currentStep === 1) {
+      handleServicioChange(currentCita.idServicio);
     }
     
     setError(null);
@@ -184,7 +210,6 @@ export const CitaClienteComponent = () => {
                         onClick={() => setCurrentCita({ ...currentCita, idServicio: servicio.idServicio })}
                       >
                         <div className="service-icon">
-                          {/* Icono según categoría (se podría personalizar) */}
                           <i className="spa-icon">✿</i>
                         </div>
                         <h3>{servicio.nombreServicio}</h3>
@@ -207,7 +232,6 @@ export const CitaClienteComponent = () => {
                           onClick={() => setCurrentCita({ ...currentCita, idEmpleado: empleado.idEmpleado })}
                         >
                           <div className="employee-avatar">
-                            {/* Se podría personalizar con foto del empleado */}
                             <div className="employee-initial">
                               {empleado.nombreEmpleado.charAt(0)}
                             </div>
