@@ -38,40 +38,45 @@ export const CitaClienteComponent = () => {
       });
   }, []);
 
+  // Esta función carga los empleados que ofrecen un servicio específico
+  const cargarEmpleadosPorServicio = (idServicio) => {
+    if (!idServicio) {
+      setEmpleados([]);
+      return Promise.resolve();
+    }
+
+    setIsLoading(true);
+    return getEmpleadosPorServicio(idServicio)
+      .then((response) => {
+        console.log("Datos de empleados por servicio:", response.data);
+        // Transformamos los datos si es necesario
+        const empleadosFormateados = response.data.map(item => ({
+          idEmpleado: item.idEmpleado,
+          nombreEmpleado: item.nombreEmpleado,
+          // Agregamos otros campos que podrían estar disponibles
+          especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
+        }));
+        setEmpleados(empleadosFormateados);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error completo obteniendo empleados:", err);
+        let errorMsg = "No se pudo obtener la lista de empleados para el servicio seleccionado.";
+        
+        if (err.response) {
+          console.error("Datos del error:", err.response.data);
+          errorMsg += " " + (err.response.data.message || `Error ${err.response.status}`);
+        }
+        
+        setError(errorMsg);
+        setEmpleados([]); // Aseguramos que la lista de empleados quede vacía en caso de error
+        setIsLoading(false);
+      });
+  };
+
   const handleServicioChange = (idServicio) => {
     setCurrentCita({ ...currentCita, idServicio, idEmpleado: '' });
-    
-    if (idServicio) {
-      setIsLoading(true);
-      getEmpleadosPorServicio(idServicio)
-        .then((response) => {
-          console.log("Datos de empleados por servicio:", response.data);
-          // Transformamos los datos si es necesario
-          const empleadosFormateados = response.data.map(item => ({
-            idEmpleado: item.idEmpleado,
-            nombreEmpleado: item.nombreEmpleado,
-            // Agregamos otros campos que podrían estar disponibles
-            especialidad: item.especialidad || { nombreEspecialidad: 'Especialista' }
-          }));
-          setEmpleados(empleadosFormateados);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error completo obteniendo empleados:", err);
-          let errorMsg = "No se pudo obtener la lista de empleados para el servicio seleccionado.";
-          
-          if (err.response) {
-            console.error("Datos del error:", err.response.data);
-            errorMsg += " " + (err.response.data.message || `Error ${err.response.status}`);
-          }
-          
-          setError(errorMsg);
-          setEmpleados([]); // Aseguramos que la lista de empleados quede vacía en caso de error
-          setIsLoading(false);
-        });
-    } else {
-      setEmpleados([]);
-    }
+    // No cargamos los empleados aquí, lo haremos al avanzar al paso 2
   };
 
   const handleDateChange = (date) => {
@@ -84,8 +89,19 @@ export const CitaClienteComponent = () => {
       return;
     }
 
+    // Crear el objeto de cita con el formato correcto para la API
+    const citaData = {
+      idCliente: parseInt(currentCita.idCliente) || 1,
+      idEmpleado: parseInt(currentCita.idEmpleado),
+      idServicio: parseInt(currentCita.idServicio),
+      fechaHora: currentCita.fechaHora.toISOString().slice(0, 16),
+      estado: currentCita.estado
+    };
+
+    console.log("Datos de cita a enviar:", citaData);
+
     setIsLoading(true);
-    guardarCita(currentCita)
+    guardarCita(citaData)
       .then((response) => {
         console.log("Cita creada exitosamente:", response.data);
         setShowSuccess(true);
@@ -127,18 +143,26 @@ export const CitaClienteComponent = () => {
       setError("Por favor, selecciona un servicio");
       return;
     }
+    
     if (currentStep === 2 && !currentCita.idEmpleado) {
-      setError("Por favor, selecciona un empleado");
+      setError("Por favor, selecciona un especialista");
       return;
     }
     
     // Si estamos en el paso 1 y vamos a avanzar al paso 2, cargar los empleados
     if (currentStep === 1) {
-      handleServicioChange(currentCita.idServicio);
+      cargarEmpleadosPorServicio(currentCita.idServicio)
+        .then(() => {
+          setError(null);
+          setCurrentStep(currentStep + 1);
+        })
+        .catch(() => {
+          // El error ya se maneja en cargarEmpleadosPorServicio
+        });
+    } else {
+      setError(null);
+      setCurrentStep(currentStep + 1);
     }
-    
-    setError(null);
-    setCurrentStep(currentStep + 1);
   };
 
   const moveToPreviousStep = () => {
@@ -207,7 +231,7 @@ export const CitaClienteComponent = () => {
                       <div 
                         key={servicio.idServicio}
                         className={`service-card ${currentCita.idServicio === servicio.idServicio ? 'selected' : ''}`}
-                        onClick={() => setCurrentCita({ ...currentCita, idServicio: servicio.idServicio })}
+                        onClick={() => handleServicioChange(servicio.idServicio)}
                       >
                         <div className="service-icon">
                           <i className="spa-icon">✿</i>
