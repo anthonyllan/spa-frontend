@@ -4,12 +4,20 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_SERVICIO_API_URL || 'http://localhost:9000';
 const REST_API_BASE_URL = `${API_URL}/api/servicios`;
 
-export const listServicios = () => axios.get(REST_API_BASE_URL);
+// Crear una instancia de Axios con tiempos de espera aumentados
+const axiosInstance = axios.create({
+  timeout: 30000, // 30 segundos
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
 
-export const getServicioById = (id) => axios.get(`${REST_API_BASE_URL}/${id}`);
+export const listServicios = () => axiosInstance.get(REST_API_BASE_URL);
 
-export const guardarServicio = (servicio) => axios.post(REST_API_BASE_URL, servicio);
+export const getServicioById = (id) => axiosInstance.get(`${REST_API_BASE_URL}/${id}`);
 
-export const actualizarServicio = (id, servicio) => axios.put(`${REST_API_BASE_URL}/${id}`, servicio);
+export const guardarServicio = (servicio) => axiosInstance.post(REST_API_BASE_URL, servicio);
 
-export const eliminarServicio = (id) => axios.delete(`${REST_API_BASE_URL}/${id}`);
+export const actualizarServicio = (id, servicio) => axiosInstance.put(`${REST_API_BASE_URL}/${id}`, servicio);
+
+export const eliminarServicio = (id) => axiosInstance.delete(`${REST_API_BASE_URL}/${id}`);
