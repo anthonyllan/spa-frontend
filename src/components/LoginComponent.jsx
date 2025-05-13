@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { guardarCliente, listClientes } from '../services/ClienteService';
 import './LoginComponent.css';
 
-const LoginComponent = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const LoginComponent = ({ isRegistration = false }) => {
+  const [activeTab, setActiveTab] = useState(isRegistration ? 'register' : 'login');
   const [formData, setFormData] = useState({
     correoCliente: '',
-    password: '', // Nota: Deberás añadir un campo de contraseña a tu API
+    password: '',
     nombreCliente: '',
     apellidosCliente: ''
   });
@@ -28,7 +28,7 @@ const LoginComponent = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (activeTab === 'login') {
         // Verificar si es el administrador
         if (formData.correoCliente === 'admin@spadivine.mx' && formData.password === 'admin123') {
           loginAsAdmin();
@@ -83,86 +83,108 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-logo">
-          <h2>Spa Divine</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h2 className="login-title">Spa Divine</h2>
+          <p className="login-subtitle">Tu momento de bienestar comienza aquí</p>
         </div>
-        <h3>{isLogin ? 'Iniciar Sesión' : 'Registrarse'}</h3>
+
+        <div className="login-tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'login' ? 'active' : ''}`}
+            onClick={() => setActiveTab('login')}
+          >
+            Iniciar Sesión
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'register' ? 'active' : ''}`}
+            onClick={() => setActiveTab('register')}
+          >
+            Registrarse
+          </button>
+        </div>
         
-        {error && <div className="auth-error">{error}</div>}
+        {error && <div className="login-error-message">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label>Correo Electrónico</label>
+            <label className="form-label" htmlFor="correoCliente">Correo Electrónico</label>
             <input
               type="email"
+              id="correoCliente"
               name="correoCliente"
+              className="form-control"
               value={formData.correoCliente}
               onChange={handleChange}
-              placeholder="tu@email.com"
+              placeholder="ejemplo@correo.com"
               required
             />
           </div>
           
           <div className="form-group">
-            <label>Contraseña</label>
+            <label className="form-label" htmlFor="password">Contraseña</label>
             <input
               type="password"
+              id="password"
               name="password"
+              className="form-control"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Tu contraseña"
+              placeholder="Ingresa tu contraseña"
               required
             />
           </div>
           
-          {!isLogin && (
+          {activeTab === 'register' && (
             <>
               <div className="form-group">
-                <label>Nombre</label>
+                <label className="form-label" htmlFor="nombreCliente">Nombre</label>
                 <input
                   type="text"
+                  id="nombreCliente"
                   name="nombreCliente"
+                  className="form-control"
                   value={formData.nombreCliente}
                   onChange={handleChange}
                   placeholder="Tu nombre"
-                  required={!isLogin}
+                  required={activeTab === 'register'}
                 />
               </div>
               
               <div className="form-group">
-                <label>Apellidos</label>
+                <label className="form-label" htmlFor="apellidosCliente">Apellidos</label>
                 <input
                   type="text"
+                  id="apellidosCliente"
                   name="apellidosCliente"
+                  className="form-control"
                   value={formData.apellidosCliente}
                   onChange={handleChange}
                   placeholder="Tus apellidos"
-                  required={!isLogin}
+                  required={activeTab === 'register'}
                 />
               </div>
             </>
           )}
           
           <button 
-            className="auth-button" 
+            className="btn-login" 
             type="submit"
             disabled={loading}
           >
-            {loading ? 'Procesando...' : isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+            {loading ? 'Procesando...' : activeTab === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </button>
         </form>
         
-        <div className="auth-toggle">
-          {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
-          <button 
-            type="button" 
-            className="toggle-button"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ? 'Regístrate' : 'Inicia Sesión'}
-          </button>
+        {activeTab === 'login' && (
+          <div className="login-help">
+            <a href="#" className="forgot-password">¿Olvidaste tu contraseña?</a>
+          </div>
+        )}
+        
+        <div className="login-decoration">
+          <div className="decoration-circle"></div>
         </div>
       </div>
     </div>
