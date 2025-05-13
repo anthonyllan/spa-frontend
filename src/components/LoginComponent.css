@@ -125,7 +125,7 @@
   
   .spa-auth-tabs {
     display: flex;
-    background-color: #f8f9fa;
+    background-color: #e93b72;
     border-radius: var(--border-radius-lg);
     padding: 0.5rem;
     margin-bottom: 2rem;
