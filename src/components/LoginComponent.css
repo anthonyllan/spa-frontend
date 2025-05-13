@@ -511,3 +511,70 @@
       padding: 0.8rem;
     }
   }
+
+
+  /* Ajustes de color - añadir al archivo CSS existente */
+
+/* Cambio de color de texto a oscuro para mejor visibilidad */
+.spa-auth-form-section,
+.spa-form-label,
+.spa-form-input,
+.spa-auth-heading h3,
+.spa-auth-subheading,
+.spa-register-cta,
+.spa-login-cta,
+.spa-form-help,
+.spa-auth-footer {
+  color: var(--text-dark);
+}
+
+/* Color oscuro para placeholder */
+.spa-form-input::placeholder {
+  color: var(--text-light);
+}
+
+/* Ajuste de colores para los botones */
+.spa-auth-tab {
+  color: var(--text-dark);
+}
+
+/* Colores de fondo pastel para los botones no activos */
+.spa-auth-tab:not(.active) {
+  background-color: var(--secondary-color);
+  color: var(--text-dark);
+}
+
+/* Estilo para el botón de autenticación con color pastel */
+.spa-auth-button {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 8px rgba(106, 141, 146, 0.3);
+}
+
+.spa-auth-button:hover {
+  background-color: #5a7a7e; /* versión más oscura del color primario */
+  box-shadow: 0 6px 12px rgba(106, 141, 146, 0.4);
+}
+
+/* Enlaces y botones de texto */
+.spa-text-button {
+  color: var(--primary-color);
+}
+
+.spa-text-button:hover {
+  color: #5a7a7e;
+}
+
+.spa-forgot-link {
+  color: var(--text-medium);
+}
+
+.spa-forgot-link:hover {
+  color: var(--primary-color);
+}
+
+/* Asegurar que el texto en el panel de imagen sea legible */
+.spa-auth-image-section {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
