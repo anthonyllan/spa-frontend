@@ -6,7 +6,7 @@ const InicioComponent = () => {
     <div className="container">
       <div className="row">
         <div>
-          <hr />
+          
         </div>
         <div className="col-md-12">
           <h1 className="text-center">Bienvenido al centro de administración</h1>
@@ -15,7 +15,7 @@ const InicioComponent = () => {
       </div>
       <div className="row">
         <div className="col-md-12">
-          <p className="text-center">Aquí puedes agregar, editar y eliminar registros de empleados, clientes y productos.</p>
+          <p className="text-center"></p>
         </div>
       </div>
     </div>
