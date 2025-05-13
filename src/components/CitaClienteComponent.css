@@ -120,7 +120,7 @@
   transition: all var(--transition-normal);
   border: 2px solid transparent;
   box-shadow: var(--shadow-sm);
-  min-height: 300px; /* Altura mínima para asegurar que el contenido sea visible */
+  min-height: 300px; /* Aumentado a 300px para más altura */
   display: flex;
   flex-direction: column;
   justify-content: center;

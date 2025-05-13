@@ -4,23 +4,23 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CitaClienteComponent.css';
-import { useAuth } from '../context/AuthContext'; // Importación añadida del hook useAuth
+import { useAuth } from '../context/AuthContext';
 
 // Registrar locale español para el datepicker
 registerLocale('es', es);
 
 export const CitaClienteComponent = () => {
-  // Añadido: hook useAuth para acceder a los datos del usuario autenticado
+  // Hook useAuth para acceder a los datos del usuario autenticado
   const { userData } = useAuth();
   
   const [servicios, setServicios] = useState([]);
   const [empleados, setEmpleados] = useState([]);
-  const [empleadoServicioMapping, setEmpleadoServicioMapping] = useState([]); // Nueva variable para almacenar asignaciones
+  const [empleadoServicioMapping, setEmpleadoServicioMapping] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [currentCita, setCurrentCita] = useState({
-    idCliente: userData?.idCliente || '1', // Modificado: usar idCliente del usuario autenticado
+    idCliente: userData?.idCliente || '1',
     idEmpleado: '',
     idServicio: '',
     fechaHora: new Date(),
@@ -36,7 +36,7 @@ export const CitaClienteComponent = () => {
     // Cargar primero las asignaciones de empleado-servicio
     Promise.all([
       listServicios(),
-      getEmpleadoServicioAsignaciones() // Esta es una nueva llamada para obtener las asignaciones
+      getEmpleadoServicioAsignaciones()
     ])
       .then(([serviciosResponse, asignacionesResponse]) => {
         console.log("Datos de servicios:", serviciosResponse.data);
@@ -78,7 +78,6 @@ export const CitaClienteComponent = () => {
     }
     
     // Datos hardcodeados como fallback cuando no se puede obtener la API de asignaciones
-    // Este es un arreglo temporal hasta que la API esté disponible
     const asignacionesHardcoded = [
       { idEmpleado: 3, idServicio: 1 }, // Karen - Corte y Peinado
       { idEmpleado: 3, idServicio: 4 }, // Karen - Hidratación facial
@@ -177,7 +176,7 @@ export const CitaClienteComponent = () => {
 
     // Crear el objeto de cita con el formato correcto para la API
     const citaData = {
-      idCliente: parseInt(userData?.idCliente) || parseInt(currentCita.idCliente) || 1, // Modificado: usar idCliente del usuario autenticado
+      idCliente: parseInt(userData?.idCliente) || parseInt(currentCita.idCliente) || 1,
       idEmpleado: parseInt(currentCita.idEmpleado),
       idServicio: parseInt(currentCita.idServicio),
       fechaHora: currentCita.fechaHora.toISOString().slice(0, 19),
@@ -192,7 +191,7 @@ export const CitaClienteComponent = () => {
         console.log("Cita creada exitosamente:", response.data);
         setShowSuccess(true);
         setCurrentCita({
-          idCliente: userData?.idCliente || '1', // Modificado: usar idCliente del usuario autenticado
+          idCliente: userData?.idCliente || '1',
           idEmpleado: '',
           idServicio: '',
           fechaHora: new Date(),
@@ -439,9 +438,6 @@ export const CitaClienteComponent = () => {
             </div>
           </>
         )}
-        
-        {/* Panel de depuración mejorado */}
-        {renderDebugInfo()}
       </div>
     </div>
   );
