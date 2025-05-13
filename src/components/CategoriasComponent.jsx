@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listCategorias, guardarCategoria, actualizarCategoria, eliminarCategoria } from '../services/CategoriaService';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
 export const CategoriasComponent = () => {
   const [categorias, setCategorias] = useState([]);
@@ -11,6 +11,8 @@ export const CategoriasComponent = () => {
     idCategoria: '',
     nombreCategoria: '',
   });
+  // Estado para errores de validación
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     listCategorias()
@@ -22,18 +24,53 @@ export const CategoriasComponent = () => {
     setModalType(type);
     setCurrentCategoria(categoria);
     setShowModal(true);
+    // Limpiar errores de validación al abrir el modal
+    setValidationErrors({});
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
+  // Validación para nombre de categoría (solo letras y espacios)
+  const validateNombreCategoria = (value) => {
+    if (!value.trim()) {
+      return "El nombre de la categoría es obligatorio.";
+    }
+    if (/[0-9]/.test(value)) {
+      return "El nombre no debe contener números.";
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(value)) {
+      return "El nombre solo debe contener letras y espacios.";
+    }
+    return "";
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentCategoria({ ...currentCategoria, [name]: value });
+    
+    // Validar en tiempo real
+    if (name === "nombreCategoria") {
+      const error = validateNombreCategoria(value);
+      setValidationErrors({
+        ...validationErrors,
+        [name]: error
+      });
+    }
   };
 
   const handleSubmit = () => {
+    // Validar todos los campos antes de enviar
+    const nombreError = validateNombreCategoria(currentCategoria.nombreCategoria);
+    
+    if (nombreError) {
+      setValidationErrors({
+        nombreCategoria: nombreError
+      });
+      return; // Detener el envío si hay errores
+    }
+
     if (modalType === 'add') {
       guardarCategoria(currentCategoria)
         .then((response) => {
@@ -81,7 +118,7 @@ export const CategoriasComponent = () => {
               <td>{categoria.idCategoria}</td>
               <td>{categoria.nombreCategoria}</td>
               <td>
-                <Button variant="warning" onClick={() => handleShowModal('edit', categoria)}>Editar</Button>
+                <Button variant="warning" className="me-2" onClick={() => handleShowModal('edit', categoria)}>Editar</Button>
                 <Button variant="danger" onClick={() => handleDelete(categoria.idCategoria)}>Eliminar</Button>
               </td>
             </tr>
@@ -102,7 +139,14 @@ export const CategoriasComponent = () => {
                 name="nombreCategoria"
                 value={currentCategoria.nombreCategoria}
                 onChange={handleInputChange}
+                isInvalid={!!validationErrors.nombreCategoria}
               />
+              <Form.Control.Feedback type="invalid">
+                {validationErrors.nombreCategoria}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                El nombre solo debe contener letras.
+              </Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>

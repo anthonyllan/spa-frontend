@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { listEmpleados, createEmpleado, updateEmpleado, deleteEmpleado } from '../services/EmpleadoService';
-import { listEspecialidades } from '../services/EspecialidadService'; // Importa el servicio para especialidades
+import { listEspecialidades } from '../services/EspecialidadService';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 export const ListEmpleados = () => {
   const [empleados, setEmpleados] = useState([]);
-  const [especialidades, setEspecialidades] = useState([]); // Estado para las especialidades
+  const [especialidades, setEspecialidades] = useState([]);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('add');
@@ -15,8 +15,10 @@ export const ListEmpleados = () => {
     apellidosEmpleado: '',
     telefonoEmpleado: '',
     correoEmpleado: '',
-    idEspecialidad: '' // Ahora seleccionaremos desde un menú desplegable
+    idEspecialidad: ''
   });
+  // Estado para errores de validación
+  const [validationErrors, setValidationErrors] = useState({});
 
   // Función para cargar la lista de empleados
   const fetchEmpleados = () => {
@@ -63,7 +65,7 @@ export const ListEmpleados = () => {
         apellidosEmpleado: '',
         telefonoEmpleado: '',
         correoEmpleado: '',
-        idEspecialidad: '' // Valor inicial vacío
+        idEspecialidad: ''
       });
     } else if (type === 'edit' && empleado) {
       setCurrentEmpleado({
@@ -72,6 +74,7 @@ export const ListEmpleados = () => {
       });
     }
     setError(null);
+    setValidationErrors({}); // Limpiar errores de validación
     setShowModal(true);
   };
 
@@ -86,16 +89,112 @@ export const ListEmpleados = () => {
       idEspecialidad: ''
     });
     setError(null);
+    setValidationErrors({});
+  };
+
+  // Funciones de validación
+  const validateNombre = (value) => {
+    if (!value.trim()) {
+      return "El nombre es obligatorio.";
+    }
+    if (/[0-9]/.test(value)) {
+      return "El nombre no debe contener números.";
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(value)) {
+      return "El nombre solo debe contener letras y espacios.";
+    }
+    return "";
+  };
+
+  const validateApellidos = (value) => {
+    if (!value.trim()) {
+      return ""; // Puedes hacerlo opcional
+    }
+    if (/[0-9]/.test(value)) {
+      return "Los apellidos no deben contener números.";
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(value)) {
+      return "Los apellidos solo deben contener letras y espacios.";
+    }
+    return "";
+  };
+
+  const validateTelefono = (value) => {
+    if (!value.trim()) {
+      return ""; // Puedes hacerlo opcional
+    }
+    if (!/^\d{10}$/.test(value)) {
+      return "El teléfono debe tener 10 dígitos numéricos.";
+    }
+    return "";
+  };
+
+  const validateCorreo = (value) => {
+    if (!value.trim()) {
+      return "El correo electrónico es obligatorio.";
+    }
+    // Validación para correo electrónico común
+    const emailPattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}$/;
+    if (!emailPattern.test(value)) {
+      return "El formato de correo electrónico es inválido.";
+    }
+    // Verificar que sea un dominio común
+    const validDomains = ["gmail.com", "outlook.com", "hotmail.com", "yahoo.com", "live.com"];
+    const domain = value.split('@')[1];
+    if (!validDomains.includes(domain)) {
+      return "Por favor use un dominio de correo válido como @gmail.com";
+    }
+    return "";
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentEmpleado({ ...currentEmpleado, [name]: value });
+    
+    // Validación en tiempo real según el campo
+    switch(name) {
+      case 'nombreEmpleado':
+        setValidationErrors({
+          ...validationErrors,
+          [name]: validateNombre(value)
+        });
+        break;
+      case 'apellidosEmpleado':
+        setValidationErrors({
+          ...validationErrors,
+          [name]: validateApellidos(value)
+        });
+        break;
+      case 'telefonoEmpleado':
+        setValidationErrors({
+          ...validationErrors,
+          [name]: validateTelefono(value)
+        });
+        break;
+      case 'correoEmpleado':
+        setValidationErrors({
+          ...validationErrors,
+          [name]: validateCorreo(value)
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSubmit = () => {
-    if (!currentEmpleado.nombreEmpleado || !currentEmpleado.correoEmpleado) {
-      setError("Nombre y Correo son campos obligatorios.");
+    // Validar todos los campos antes de enviar
+    const errors = {
+      nombreEmpleado: validateNombre(currentEmpleado.nombreEmpleado),
+      apellidosEmpleado: validateApellidos(currentEmpleado.apellidosEmpleado),
+      telefonoEmpleado: validateTelefono(currentEmpleado.telefonoEmpleado),
+      correoEmpleado: validateCorreo(currentEmpleado.correoEmpleado)
+    };
+
+    // Verificar si hay errores de validación
+    const hasErrors = Object.values(errors).some(error => error !== "");
+    if (hasErrors) {
+      setValidationErrors(errors);
       return;
     }
 
@@ -120,7 +219,7 @@ export const ListEmpleados = () => {
     if (modalType === 'add') {
       createEmpleado(empleadoDataToSend)
         .then((response) => {
-          console.log("Respuesta del servidor:", response.data); // Para depuración
+          console.log("Respuesta del servidor:", response.data);
           fetchEmpleados();
           handleCloseModal();
         })
@@ -266,15 +365,22 @@ export const ListEmpleados = () => {
               </Form.Group>
             )}
             <Form.Group className="mb-3" controlId="formNombreEmpleado">
-              <Form.Label>Nombre</Form.Label>
+              <Form.Label>Nombre <span className="text-danger">*</span></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ingrese el nombre"
                 name="nombreEmpleado"
                 value={currentEmpleado.nombreEmpleado}
                 onChange={handleInputChange}
+                isInvalid={!!validationErrors.nombreEmpleado}
                 required
               />
+              <Form.Control.Feedback type="invalid">
+                {validationErrors.nombreEmpleado}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                Solo se permiten letras.
+              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formApellidosEmpleado">
               <Form.Label>Apellidos</Form.Label>
@@ -284,28 +390,49 @@ export const ListEmpleados = () => {
                 name="apellidosEmpleado"
                 value={currentEmpleado.apellidosEmpleado}
                 onChange={handleInputChange}
+                isInvalid={!!validationErrors.apellidosEmpleado}
               />
+              <Form.Control.Feedback type="invalid">
+                {validationErrors.apellidosEmpleado}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                Solo se permiten letras.
+              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formTelefonoEmpleado">
               <Form.Label>Teléfono</Form.Label>
               <Form.Control
                 type="tel"
-                placeholder="Ingrese el teléfono"
+                placeholder="Ingrese el teléfono (10 dígitos)"
                 name="telefonoEmpleado"
                 value={currentEmpleado.telefonoEmpleado}
                 onChange={handleInputChange}
+                isInvalid={!!validationErrors.telefonoEmpleado}
               />
+              <Form.Control.Feedback type="invalid">
+                {validationErrors.telefonoEmpleado}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                Solo se permiten números (10 dígitos).
+              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formCorreoEmpleado">
-              <Form.Label>Correo Electrónico</Form.Label>
+              <Form.Label>Correo Electrónico <span className="text-danger">*</span></Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Ingrese el correo"
                 name="correoEmpleado"
                 value={currentEmpleado.correoEmpleado}
                 onChange={handleInputChange}
+                isInvalid={!!validationErrors.correoEmpleado}
                 required
               />
+              <Form.Control.Feedback type="invalid">
+                {validationErrors.correoEmpleado}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                Formato: ejemplo@gmail.com
+              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formEspecialidad">
               <Form.Label>Especialidad</Form.Label>
@@ -331,7 +458,11 @@ export const ListEmpleados = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button 
+            variant="primary" 
+            onClick={handleSubmit}
+            disabled={Object.values(validationErrors).some(error => error !== "")}
+          >
             {modalType === 'add' ? 'Agregar' : 'Guardar Cambios'}
           </Button>
         </Modal.Footer>
