@@ -1,148 +1,199 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './InicioClienteComponent.css';
 
-const InicioClienteComponent = ({ isPublic = false }) => {
-  const { userData } = useAuth();
-  
-  // Obtener el nombre del cliente para mostrar un saludo personalizado
-  const clientName = userData?.nombreCliente || '';
+// Opcional: importar biblioteca de animaciones
+// import AOS from 'aos';
+// import 'aos/dist/aos.css';
+
+function InicioClienteComponent() {
+  const navigate = useNavigate();
+
+  // Opcional: inicializar animaciones al cargar
+  // useEffect(() => {
+  //   AOS.init({ duration: 1000, once: true });
+  // }, []);
+
+  const handleAgendarCita = () => {
+    navigate('/cita-cliente');
+  };
 
   return (
-    <div className="inicio-cliente-container">
+    <div className="inicio-cliente">
+      {/* Hero Section */}
       <section className="hero-section">
+        <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1>Bienvenido{clientName ? `, ${clientName}` : ''} a Spa Divine</h1>
-          <p className="hero-tagline">Tu experiencia de bienestar y relajación comienza aquí</p>
-          <p className="hero-description">
-            Descubre nuestros exclusivos tratamientos diseñados para renovar tu cuerpo, mente y espíritu.
+          <h1 className="hero-title">Bienvenido al <span className="accent">Mundo Divine</span></h1>
+          <p className="hero-subtitle">Un santuario de relajación y bienestar para el cuerpo y el espíritu</p>
+          <button className="btn-primary hero-btn" onClick={handleAgendarCita}>
+            Reserva tu experiencia
+            <i className="arrow-icon">→</i>
+          </button>
+        </div>
+      </section>
+
+      {/* Servicios Destacados */}
+      <section className="featured-services">
+        <div className="section-header">
+          <span className="section-tag">Nuestros Servicios</span>
+          <h2 className="section-title">Descubre la Experiencia <span className="accent">Divine</span></h2>
+          <div className="separator"></div>
+        </div>
+
+        <div className="services-container">
+          {/* Servicio 1 */}
+          <div className="service-card" data-aos="fade-up">
+            <div className="service-image-container">
+              <img src="/images/masajes.jpg" alt="Masajes Terapéuticos" className="service-image" />
+              <div className="service-overlay"></div>
+            </div>
+            <div className="service-content">
+              <div className="service-icon">
+                <i className="icon">✦</i>
+              </div>
+              <h3 className="service-title">Masajes Terapéuticos</h3>
+              <p className="service-description">
+                Sumérgete en un estado de profunda relajación con nuestros masajes personalizados. 
+                Combinamos técnicas ancestrales y modernas para liberar tensiones y restaurar tu energía vital.
+              </p>
+              <a href="#" className="service-link">Explorar tratamientos <i className="arrow">→</i></a>
+            </div>
+          </div>
+
+          {/* Servicio 2 */}
+          <div className="service-card" data-aos="fade-up" data-aos-delay="100">
+            <div className="service-image-container">
+              <img src="/images/faciales.jpg" alt="Rituales Faciales" className="service-image" />
+              <div className="service-overlay"></div>
+            </div>
+            <div className="service-content">
+              <div className="service-icon">
+                <i className="icon">✦</i>
+              </div>
+              <h3 className="service-title">Rituales Faciales</h3>
+              <p className="service-description">
+                Tratamientos faciales exclusivos que combinan ingredientes naturales de la más alta calidad 
+                para revelar la luminosidad natural de tu piel y un resplandor renovado.
+              </p>
+              <a href="#" className="service-link">Explorar tratamientos <i className="arrow">→</i></a>
+            </div>
+          </div>
+
+          {/* Servicio 3 */}
+          <div className="service-card" data-aos="fade-up" data-aos-delay="200">
+            <div className="service-image-container">
+              <img src="/images/manicura.jpg" alt="Arte en Manos y Pies" className="service-image" />
+              <div className="service-overlay"></div>
+            </div>
+            <div className="service-content">
+              <div className="service-icon">
+                <i className="icon">✦</i>
+              </div>
+              <h3 className="service-title">Arte en Manos y Pies</h3>
+              <p className="service-description">
+                Más que un simple manicure o pedicure, nuestros tratamientos embellecen, nutren y reparan 
+                tus manos y pies con productos premium y técnicas artísticas de vanguardia.
+              </p>
+              <a href="#" className="service-link">Explorar tratamientos <i className="arrow">→</i></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sección de Bienvenida */}
+      <section className="welcome-section">
+        <div className="welcome-grid">
+          <div className="welcome-image-container" data-aos="fade-right">
+            <img src="/images/maquillaje.jpg" alt="Spa Divine Ambiente" className="welcome-image" />
+          </div>
+          <div className="welcome-content" data-aos="fade-left">
+            <span className="section-tag">Sobre Nosotros</span>
+            <h2 className="section-title">Un Santuario de <span className="accent">Bienestar</span></h2>
+            <p className="welcome-text">
+              En SPA Divine, creemos que el verdadero lujo es tomarse tiempo para uno mismo. Nuestro espacio 
+              ha sido meticulosamente diseñado para transportarte a un estado de serenidad desde el momento en 
+              que cruzas nuestras puertas.
+            </p>
+            <p className="welcome-text">
+              Cada tratamiento es una experiencia sensorial completa, donde combinamos técnicas expertas, 
+              productos de la más alta calidad y un entorno que estimula todos tus sentidos.
+            </p>
+            <div className="welcome-features">
+              <div className="feature">
+                <div className="feature-icon">✓</div>
+                <span>Terapeutas certificados</span>
+              </div>
+              <div className="feature">
+                <div className="feature-icon">✓</div>
+                <span>Productos orgánicos premium</span>
+              </div>
+              <div className="feature">
+                <div className="feature-icon">✓</div>
+                <span>Ambiente de absoluta tranquilidad</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonios */}
+      <section className="testimonials-section">
+        <div className="section-header light">
+          <span className="section-tag">Testimonios</span>
+          <h2 className="section-title">Lo que dicen nuestros <span className="accent">Clientes</span></h2>
+          <div className="separator"></div>
+        </div>
+        
+        <div className="testimonials-container">
+          <div className="testimonial-card" data-aos="zoom-in">
+            <div className="quote-icon">"</div>
+            <p className="testimonial-text">
+              Una experiencia absolutamente transformadora. El masaje de piedras calientes alivió mi dolor 
+              crónico de espalda y los terapeutas fueron increíblemente atentos a mis necesidades.
+            </p>
+            <div className="testimonial-author">
+              <div className="author-avatar">ML</div>
+              <div className="author-info">
+                <h4>María López</h4>
+                <span>Cliente desde 2022</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="testimonial-card" data-aos="zoom-in" data-aos-delay="100">
+            <div className="quote-icon">"</div>
+            <p className="testimonial-text">
+              El facial personalizado fue justo lo que mi piel necesitaba. La estheticienne diagnosticó 
+              perfectamente mi tipo de piel y seleccionó productos que realmente funcionaron para mí.
+            </p>
+            <div className="testimonial-author">
+              <div className="author-avatar">CG</div>
+              <div className="author-info">
+                <h4>Carlos Gutiérrez</h4>
+                <span>Cliente desde 2023</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Final */}
+      <section className="cta-section">
+        <div className="cta-overlay"></div>
+        <div className="cta-container">
+          <h2 className="cta-title">Comienza tu viaje de bienestar hoy</h2>
+          <p className="cta-text">
+            Date el regalo del tiempo para ti. Nuestro equipo está listo para crear una 
+            experiencia personalizada que revitalice tu cuerpo y eleve tu espíritu.
           </p>
-          
-          {/* Mostrar diferentes botones según si es público o autenticado */}
-          <div className="cta-buttons">
-            {isPublic ? (
-              <>
-                <Link to="/login" className="btn-primary">Iniciar Sesión</Link>
-                <Link to="/registro" className="btn-secondary">Crear Cuenta</Link>
-              </>
-            ) : (
-              <Link to="/cita-cliente" className="btn-primary">Agendar una cita</Link>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="services-preview">
-        <div className="section-header">
-          <h2 className="section-title">Nuestros Servicios</h2>
-          <p className="section-subtitle">Tratamientos especializados para tu bienestar</p>
-        </div>
-        
-        <div className="services-grid">
-          <div className="service-card">
-            <div className="service-image massage"></div>
-            <h3>Masajes Terapéuticos</h3>
-            <p>Relaja tu cuerpo y mente con nuestros masajes profesionales que alivian tensiones.</p>
-            {isPublic ? (
-              <Link to="/login" className="service-link">Reservar ahora</Link>
-            ) : (
-              <Link to="/cita-cliente" className="service-link">Reservar ahora</Link>
-            )}
-          </div>
-          
-          <div className="service-card">
-            <div className="service-image facial"></div>
-            <h3>Tratamientos Faciales</h3>
-            <p>Cuida y revitaliza tu piel con nuestros tratamientos personalizados de alta gama.</p>
-            {isPublic ? (
-              <Link to="/login" className="service-link">Reservar ahora</Link>
-            ) : (
-              <Link to="/cita-cliente" className="service-link">Reservar ahora</Link>
-            )}
-          </div>
-          
-          <div className="service-card">
-            <div className="service-image body"></div>
-            <h3>Tratamientos Corporales</h3>
-            <p>Renueva tu energía y mejora tu piel con nuestros tratamientos corporales exclusivos.</p>
-            {isPublic ? (
-              <Link to="/login" className="service-link">Reservar ahora</Link>
-            ) : (
-              <Link to="/cita-cliente" className="service-link">Reservar ahora</Link>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="about-section">
-        <div className="about-content">
-          <div className="section-header">
-            <h2 className="section-title">Sobre Spa Divine</h2>
-            <p className="section-subtitle">Nuestro compromiso con tu bienestar</p>
-          </div>
-          
-          <div className="about-description">
-            <p>En Spa Divine nos dedicamos a proporcionar experiencias de bienestar excepcionales a través de tratamientos de alta calidad en un ambiente tranquilo y acogedor.</p>
-            <p>Nuestro equipo de profesionales está comprometido con tu salud y satisfacción, utilizando solo productos de primera calidad y técnicas innovadoras.</p>
-          </div>
-          
-          <div className="about-features">
-            <div className="feature">
-              <div className="feature-icon">✓</div>
-              <div className="feature-text">Profesionales certificados</div>
-            </div>
-            <div className="feature">
-              <div className="feature-icon">✓</div>
-              <div className="feature-text">Productos premium</div>
-            </div>
-            <div className="feature">
-              <div className="feature-icon">✓</div>
-              <div className="feature-text">Ambiente relajante</div>
-            </div>
-            <div className="feature">
-              <div className="feature-icon">✓</div>
-              <div className="feature-text">Satisfacción garantizada</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="testimonials">
-        <div className="section-header">
-          <h2 className="section-title">Lo que dicen nuestros clientes</h2>
-          <p className="section-subtitle">Experiencias reales de nuestros visitantes</p>
-        </div>
-        
-        <div className="testimonial-slider">
-          <div className="testimonial">
-            <p className="testimonial-text">"Una experiencia maravillosa. El personal es muy profesional y atento. Me sentí completamente renovada después de mi tratamiento facial."</p>
-            <div className="testimonial-author">
-              <div className="author-avatar"></div>
-              <cite>- María González</cite>
-            </div>
-          </div>
-          
-          <div className="testimonial">
-            <p className="testimonial-text">"Los mejores masajes que he recibido. La terapeuta entendió exactamente lo que necesitaba para aliviar mi dolor de espalda. Definitivamente regresaré."</p>
-            <div className="testimonial-author">
-              <div className="author-avatar"></div>
-              <cite>- Carlos Pérez</cite>
-            </div>
-          </div>
-        </div>
-        
-        {/* Diferentes llamados a la acción según modo público o autenticado */}
-        <div className="testimonial-cta">
-          {isPublic ? (
-            <Link to="/registro" className="btn-accent">Únete a nuestra comunidad de clientes satisfechos</Link>
-          ) : (
-            <Link to="/cita-cliente" className="btn-accent">Reserva tu próxima experiencia</Link>
-          )}
+          <button className="btn-primary cta-button" onClick={handleAgendarCita}>
+            Reservar mi cita
+          </button>
         </div>
       </section>
     </div>
   );
-};
+}
 
 export default InicioClienteComponent;
