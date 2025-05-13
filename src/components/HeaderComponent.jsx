@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './HeaderComponent.css';
 
 function HeaderComponent() {
-  const { userRole, loginAsAdmin, loginAsCliente } = useAuth();
+  const { userRole, userData, logout } = useAuth();
+  const navigate = useNavigate();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -39,6 +40,17 @@ function HeaderComponent() {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+  
+  const handleLogin = () => {
+    navigate('/login');
+    setMobileMenuOpen(false);
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setMobileMenuOpen(false);
   };
   
   return (
@@ -81,8 +93,14 @@ function HeaderComponent() {
           </ul>
           
           <div className="auth-controls">
-            <button className="auth-btn admin-btn" onClick={loginAsAdmin}>Admin</button>
-            <button className="auth-btn client-btn" onClick={loginAsCliente}>Cliente</button>
+            {!userRole ? (
+              <button className="auth-btn login-btn" onClick={handleLogin}>Iniciar Sesión</button>
+            ) : (
+              <>
+                <span className="user-greeting">Hola, {userData?.nombreCliente || 'Administrador'}</span>
+                <button className="auth-btn logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
+              </>
+            )}
           </div>
         </nav>
       </div>

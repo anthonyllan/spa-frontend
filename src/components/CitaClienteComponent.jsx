@@ -16,7 +16,7 @@ export const CitaClienteComponent = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [currentCita, setCurrentCita] = useState({
-    idCliente: '1',
+    idCliente: userData?.idCliente || '1',
     idEmpleado: '',
     idServicio: '',
     fechaHora: new Date(),

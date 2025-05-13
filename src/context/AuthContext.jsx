@@ -1,17 +1,74 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Crear el contexto
 const AuthContext = createContext();
 
 // Proveedor del contexto
 export const AuthProvider = ({ children }) => {
-  const [userRole, setUserRole] = useState('cliente'); // Cambia entre 'cliente' o 'admin'
+  // Verificar localStorage al cargar para ver si hay sesión guardada
+  const [userRole, setUserRole] = useState(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      const userData = JSON.parse(savedUserData);
+      return userData.role;
+    }
+    return null; // Inicialmente sin rol (no autenticado)
+  });
+  
+  // Estado para los datos del usuario actual
+  const [userData, setUserData] = useState(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      return JSON.parse(savedUserData);
+    }
+    return null;
+  });
 
-  const loginAsAdmin = () => setUserRole('admin'); // Función para simular inicio como administrador
-  const loginAsCliente = () => setUserRole('cliente'); // Función para simular inicio como cliente
+  // Efecto para guardar datos del usuario en localStorage cuando cambian
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem('userData', JSON.stringify(userData));
+    } else {
+      localStorage.removeItem('userData');
+    }
+  }, [userData]);
+
+  // Función para iniciar sesión como administrador
+  const loginAsAdmin = () => {
+    const adminData = {
+      id: 'admin',
+      name: 'Administrador',
+      role: 'admin'
+    };
+    setUserData(adminData);
+    setUserRole('admin');
+  };
+
+  // Función para iniciar sesión como cliente
+  const loginAsCliente = (clienteData) => {
+    const userWithRole = {
+      ...clienteData,
+      role: 'cliente'
+    };
+    setUserData(userWithRole);
+    setUserRole('cliente');
+  };
+
+  // Función para cerrar sesión
+  const logout = () => {
+    setUserData(null);
+    setUserRole(null);
+    localStorage.removeItem('userData');
+  };
 
   return (
-    <AuthContext.Provider value={{ userRole, loginAsAdmin, loginAsCliente }}>
+    <AuthContext.Provider value={{ 
+      userRole, 
+      userData, 
+      loginAsAdmin, 
+      loginAsCliente, 
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   );
