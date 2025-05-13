@@ -1,3 +1,4 @@
+/* Base del footer */
 .footer {
   width: 100%;
   background-color: #2C3639;
@@ -5,6 +6,27 @@
   font-size: 14px;
   margin: 0;
   padding: 0;
+  position: relative; /* Asegura que el footer sea parte del flujo normal de la página */
+  bottom: 0; /* Lo ancla al fondo */
+  left: 0; /* Alineado a la izquierda */
+  right: 0; /* Alineado a la derecha */
+}
+
+/* Si quieres que sea absolutamente fijo al fondo de la ventana, usa esto: */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* Esto hace que el contenido principal ocupe todo el espacio disponible */
 }
 
 /* Sección principal del footer */
