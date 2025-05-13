@@ -23,7 +23,7 @@ function App() {
     const { userRole } = useAuth();
     // Si no hay usuario autenticado, redirigir a la página de inicio pública
     if (!userRole) {
-      return <Navigate to="/home" />;
+      return <Navigate to="/inicio-cliente" />;
     }
     // Si hay usuario autenticado, redirigir según su rol
     return userRole === 'admin' ? <Navigate to="/inicio" /> : <Navigate to="/inicio-cliente" />;
