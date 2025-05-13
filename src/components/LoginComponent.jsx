@@ -47,7 +47,7 @@ const LoginComponent = ({ isRegistration = false }) => {
         // Verificar si es el administrador
         if (formData.correoCliente === 'admin@spadivine.mx' && formData.password === 'admin123') {
           loginAsAdmin();
-          setSuccess('Acceso concedido. Redirigiendo...');
+          setSuccess('¡Bienvenido Administrador! Accediendo al panel...');
           setTimeout(() => navigate('/inicio'), 1500);
           return;
         }
@@ -59,21 +59,21 @@ const LoginComponent = ({ isRegistration = false }) => {
         );
 
         if (!cliente) {
-          setError('Usuario no encontrado');
+          setError('Usuario no encontrado. Verifica tu correo electrónico.');
           setLoading(false);
           return;
         }
 
         // En un sistema real, verificaríamos la contraseña aquí
         loginAsCliente(cliente);
-        setSuccess('Bienvenido/a de nuevo. Redirigiendo...');
+        setSuccess(`¡Bienvenido/a de nuevo, ${cliente.nombreCliente}! Preparando tu experiencia...`);
         setTimeout(() => navigate('/cita-cliente'), 1500);
         
       } else {
         // Registro de nuevo cliente
         // Validar que todos los campos estén completos
-        if (!formData.nombreCliente || !formData.apellidosCliente || !formData.correoCliente) {
-          setError('Todos los campos son obligatorios');
+        if (!formData.nombreCliente || !formData.apellidosCliente || !formData.correoCliente || !formData.password) {
+          setError('Por favor completa todos los campos del formulario');
           setLoading(false);
           return;
         }
@@ -88,162 +88,224 @@ const LoginComponent = ({ isRegistration = false }) => {
 
         const response = await guardarCliente(nuevoCliente);
         loginAsCliente(response.data);
-        setSuccess('Cuenta creada con éxito. Redirigiendo...');
+        setSuccess('¡Cuenta creada con éxito! Bienvenido/a a Spa Divine');
         setTimeout(() => navigate('/cita-cliente'), 1500);
       }
     } catch (err) {
       console.error('Error:', err);
-      setError(err.response?.data?.message || 'Error al procesar la solicitud');
+      setError(err.response?.data?.message || 'Error al procesar la solicitud. Intenta nuevamente más tarde.');
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-decorations">
-          <div className="auth-decoration top-left"></div>
-          <div className="auth-decoration bottom-right"></div>
-        </div>
-        
-        <div className="auth-header">
-          <h2 className="auth-title">
-            <span className="auth-brand-name">Spa Divine</span>
-          </h2>
-          <p className="auth-tagline">Tu experiencia de bienestar</p>
-        </div>
-        
-        <div className="auth-tabs">
-          <button 
-            className={`auth-tab-btn ${activeTab === 'login' ? 'active' : ''}`} 
-            onClick={() => switchTab('login')}
-            disabled={animating}
-          >
-            Iniciar Sesión
-          </button>
-          <button 
-            className={`auth-tab-btn ${activeTab === 'register' ? 'active' : ''}`} 
-            onClick={() => switchTab('register')}
-            disabled={animating}
-          >
-            Registrarse
-          </button>
-          <div 
-            className="auth-tab-indicator" 
-            style={{ transform: activeTab === 'login' ? 'translateX(0)' : 'translateX(100%)' }}
-          ></div>
-        </div>
-        
-        <div className={`auth-content ${animating ? 'slide-out' : ''}`}>
-          {error && (
-            <div className="auth-message error">
-              <i className="auth-message-icon">!</i>
-              <p>{error}</p>
+    <div className="spa-auth-container">
+      <div className="spa-auth-wrapper">
+        {/* Sección de imagen decorativa */}
+        <div className="spa-auth-image-section">
+          <div className="spa-auth-image-overlay">
+            <h2 className="spa-auth-welcome">Bienvenido a Spa Divine</h2>
+            <p className="spa-auth-tagline">Tu experiencia de bienestar comienza aquí</p>
+            <div className="spa-auth-features">
+              <div className="spa-auth-feature">
+                <div className="feature-icon">✨</div>
+                <div className="feature-text">Servicios de relajación premium</div>
+              </div>
+              <div className="spa-auth-feature">
+                <div className="feature-icon">⏰</div>
+                <div className="feature-text">Reserva citas en minutos</div>
+              </div>
+              <div className="spa-auth-feature">
+                <div className="feature-icon">👤</div>
+                <div className="feature-text">Atención personalizada</div>
+              </div>
             </div>
-          )}
-          
-          {success && (
-            <div className="auth-message success">
-              <i className="auth-message-icon">✓</i>
-              <p>{success}</p>
+          </div>
+        </div>
+
+        {/* Sección del formulario */}
+        <div className="spa-auth-form-section">
+          <div className="spa-auth-form-container">
+            <div className="spa-auth-logo">
+              <span className="spa-logo-text">Spa Divine</span>
             </div>
-          )}
-          
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="form-group">
-              <label className="form-label" htmlFor="correoCliente">
-                <i className="form-icon email"></i>
-                Correo Electrónico
-              </label>
-              <input
-                type="email"
-                id="correoCliente"
-                name="correoCliente"
-                className="form-control"
-                value={formData.correoCliente}
-                onChange={handleChange}
-                placeholder="ejemplo@correo.com"
-                required
-              />
+
+            <div className="spa-auth-tabs">
+              <button 
+                className={`spa-auth-tab ${activeTab === 'login' ? 'active' : ''}`} 
+                onClick={() => switchTab('login')}
+                disabled={animating}
+              >
+                <span className="tab-icon">🔑</span>
+                <span className="tab-text">Iniciar Sesión</span>
+              </button>
+              <button 
+                className={`spa-auth-tab ${activeTab === 'register' ? 'active' : ''}`} 
+                onClick={() => switchTab('register')}
+                disabled={animating}
+              >
+                <span className="tab-icon">✏️</span>
+                <span className="tab-text">Registrarse</span>
+              </button>
             </div>
             
-            <div className="form-group">
-              <label className="form-label" htmlFor="password">
-                <i className="form-icon password"></i>
-                Contraseña
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="form-control"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Ingresa tu contraseña"
-                required
-              />
-            </div>
-            
-            {activeTab === 'register' && (
-              <>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="nombreCliente">
-                    <i className="form-icon user"></i>
-                    Nombre
+            <div className={`spa-auth-form-wrapper ${animating ? 'fade-out' : ''}`}>
+              <div className="spa-auth-heading">
+                <h3>{activeTab === 'login' ? 'Accede a tu cuenta' : 'Crea una cuenta nueva'}</h3>
+                <p className="spa-auth-subheading">
+                  {activeTab === 'login' 
+                    ? 'Ingresa tus datos para acceder a tu cuenta' 
+                    : 'Completa el formulario para unirte a Spa Divine'}
+                </p>
+              </div>
+              
+              {error && (
+                <div className="spa-auth-message error">
+                  <span className="message-icon">!</span>
+                  <p>{error}</p>
+                </div>
+              )}
+              
+              {success && (
+                <div className="spa-auth-message success">
+                  <span className="message-icon">✓</span>
+                  <p>{success}</p>
+                </div>
+              )}
+              
+              <form onSubmit={handleSubmit} className="spa-auth-form">
+                <div className="spa-form-group">
+                  <label className="spa-form-label" htmlFor="correoCliente">
+                    Correo Electrónico
                   </label>
-                  <input
-                    type="text"
-                    id="nombreCliente"
-                    name="nombreCliente"
-                    className="form-control"
-                    value={formData.nombreCliente}
-                    onChange={handleChange}
-                    placeholder="Tu nombre"
-                    required={activeTab === 'register'}
-                  />
+                  <div className="spa-input-wrapper">
+                    <span className="spa-input-icon">✉️</span>
+                    <input
+                      type="email"
+                      id="correoCliente"
+                      name="correoCliente"
+                      className="spa-form-input"
+                      value={formData.correoCliente}
+                      onChange={handleChange}
+                      placeholder="ejemplo@correo.com"
+                      required
+                    />
+                  </div>
+                  <small className="spa-form-help">
+                    {activeTab === 'login' ? 'Ingresa el correo con el que te registraste' : 'Usaremos este correo para confirmaciones'}
+                  </small>
                 </div>
                 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="apellidosCliente">
-                    <i className="form-icon user"></i>
-                    Apellidos
+                <div className="spa-form-group">
+                  <label className="spa-form-label" htmlFor="password">
+                    Contraseña
                   </label>
-                  <input
-                    type="text"
-                    id="apellidosCliente"
-                    name="apellidosCliente"
-                    className="form-control"
-                    value={formData.apellidosCliente}
-                    onChange={handleChange}
-                    placeholder="Tus apellidos"
-                    required={activeTab === 'register'}
-                  />
+                  <div className="spa-input-wrapper">
+                    <span className="spa-input-icon">🔒</span>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      className="spa-form-input"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Ingresa tu contraseña"
+                      required
+                    />
+                  </div>
                 </div>
-              </>
-            )}
-            
-            <button 
-              className={`auth-submit-btn ${loading ? 'loading' : ''}`} 
-              type="submit"
-              disabled={loading}
-            >
-              {loading && <span className="btn-spinner"></span>}
-              <span className="btn-text">
-                {activeTab === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta'}
-              </span>
-            </button>
-          </form>
-          
-          {activeTab === 'login' && (
-            <div className="auth-help">
-              <a href="#" className="auth-help-link">¿Olvidaste tu contraseña?</a>
+                
+                {activeTab === 'register' && (
+                  <>
+                    <div className="spa-form-row">
+                      <div className="spa-form-group">
+                        <label className="spa-form-label" htmlFor="nombreCliente">
+                          Nombre
+                        </label>
+                        <div className="spa-input-wrapper">
+                          <span className="spa-input-icon">👤</span>
+                          <input
+                            type="text"
+                            id="nombreCliente"
+                            name="nombreCliente"
+                            className="spa-form-input"
+                            value={formData.nombreCliente}
+                            onChange={handleChange}
+                            placeholder="Tu nombre"
+                            required={activeTab === 'register'}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="spa-form-group">
+                        <label className="spa-form-label" htmlFor="apellidosCliente">
+                          Apellidos
+                        </label>
+                        <div className="spa-input-wrapper">
+                          <span className="spa-input-icon">👤</span>
+                          <input
+                            type="text"
+                            id="apellidosCliente"
+                            name="apellidosCliente"
+                            className="spa-form-input"
+                            value={formData.apellidosCliente}
+                            onChange={handleChange}
+                            placeholder="Tus apellidos"
+                            required={activeTab === 'register'}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="spa-auth-info">
+                      <p className="spa-info-text">
+                        <span className="spa-info-icon">ℹ️</span>
+                        Al registrarte, aceptas nuestros términos y condiciones de servicio.
+                      </p>
+                    </div>
+                  </>
+                )}
+                
+                <button 
+                  className={`spa-auth-button ${loading ? 'loading' : ''}`} 
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading && <span className="button-spinner"></span>}
+                  <span className="button-text">
+                    {activeTab === 'login' ? 'Iniciar Sesión' : 'Crear mi cuenta'}
+                  </span>
+                </button>
+              </form>
+              
+              {activeTab === 'login' && (
+                <div className="spa-auth-extras">
+                  <a href="#" className="spa-forgot-link">¿Olvidaste tu contraseña?</a>
+                  <p className="spa-register-cta">
+                    ¿No tienes una cuenta? <button className="spa-text-button" onClick={() => switchTab('register')}>Regístrate aquí</button>
+                  </p>
+                </div>
+              )}
+              
+              {activeTab === 'register' && (
+                <div className="spa-auth-extras">
+                  <p className="spa-login-cta">
+                    ¿Ya tienes una cuenta? <button className="spa-text-button" onClick={() => switchTab('login')}>Inicia sesión aquí</button>
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        
-        <div className="auth-footer">
-          <p>© {new Date().getFullYear()} Spa Divine. Todos los derechos reservados.</p>
+            
+            <div className="spa-auth-footer">
+              <p>© {new Date().getFullYear()} Spa Divine. Todos los derechos reservados.</p>
+              <div className="spa-auth-footer-links">
+                <a href="#">Ayuda</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Términos</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
