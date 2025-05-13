@@ -197,3 +197,23 @@
     justify-content: center;
   }
 }
+
+
+/* Añadir esto al final de tu archivo HeaderComponent.css existente */
+
+.user-greeting {
+  cursor: default; /* Indica que no es un elemento clickeable */
+  color: #2C3639; /* Usar el mismo color que los otros elementos del nav */
+}
+
+.user-greeting:hover::after {
+  width: 0; /* Eliminar la línea de subrayado al hacer hover */
+}
+
+/* Ajuste para móviles */
+@media (max-width: 992px) {
+  .user-greeting {
+    width: 100%;
+    text-align: left;
+  }
+}

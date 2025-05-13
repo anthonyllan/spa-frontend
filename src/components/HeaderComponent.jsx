@@ -90,16 +90,22 @@ function HeaderComponent() {
                 <li className="nav-item"><Link to="/cita-cliente" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Agendar cita</Link></li>
               </>
             )}
+            
+            {/* Agregar el saludo como parte de la lista de navegación */}
+            {userRole && (
+              <li className="nav-item">
+                <span className="nav-link user-greeting">
+                  Hola, {userRole === 'admin' ? 'Administrador' : userData?.nombreCliente || 'Cliente'}
+                </span>
+              </li>
+            )}
           </ul>
           
           <div className="auth-controls">
             {!userRole ? (
-              <button className="auth-btn login-btn" onClick={handleLogin}>Iniciar Sesión</button>
+              <button className="auth-btn client-btn" onClick={handleLogin}>Iniciar Sesión</button>
             ) : (
-              <>
-                <span className="user-greeting">Hola, {userData?.nombreCliente || 'Administrador'}</span>
-                <button className="auth-btn logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
-              </>
+              <button className="auth-btn admin-btn" onClick={handleLogout}>Cerrar Sesión</button>
             )}
           </div>
         </nav>
