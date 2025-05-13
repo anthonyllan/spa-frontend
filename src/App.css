@@ -1,5 +1,10 @@
 /* Agregar margen inferior para evitar que el contenido se tape con el footer */
+html, body, #root {
+  height: 100%;
+}
+
 main {
+  flex: 1 0 auto;
   margin-bottom: 100px; /* Ajusta el valor según sea necesario */
 }
 
@@ -63,5 +68,9 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.footer {
+  flex-shrink: 0; /* Evita que el footer se encoja */
 }
 
