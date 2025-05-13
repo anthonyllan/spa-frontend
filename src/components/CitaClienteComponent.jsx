@@ -255,25 +255,6 @@ export const CitaClienteComponent = () => {
     setCurrentStep(currentStep - 1);
   };
 
-  // Para depuración - muestra esto solo en desarrollo
-  const renderDebugInfo = () => {
-    if (!debugInfo) return null;
-    
-    return (
-      <div style={{ margin: '20px', padding: '10px', border: '1px solid #ddd', backgroundColor: '#f9f9f9', borderRadius: '5px', fontSize: '12px' }}>
-        <h4>Información de Depuración</h4>
-        <p>Servicio seleccionado: {debugInfo.idServicio}</p>
-        <p>Empleados recibidos de API: {Array.isArray(debugInfo.apiResponse) ? debugInfo.apiResponse.length : 'N/A'}</p>
-        <p>Empleados en pantalla: {empleados.length}</p>
-        <details>
-          <summary>Ver datos completos</summary>
-          <pre style={{ maxHeight: '300px', overflow: 'auto' }}>{JSON.stringify(debugInfo.apiResponse, null, 2)}</pre>
-        </details>
-        <p>Usando mapeo hardcoded: {empleadoServicioMapping.length === 0 ? "Sí" : "No"}</p>
-      </div>
-    );
-  };
-
   return (
     <div className="appointment-container">
       <div className="appointment-header">
