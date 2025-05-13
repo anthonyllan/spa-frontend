@@ -1,4 +1,12 @@
 /* Estilo genérico para tablas en toda la aplicación */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--background-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
 .data-table-container {
     margin: 2rem 0;
     overflow-x: auto;
