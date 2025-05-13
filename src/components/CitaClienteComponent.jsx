@@ -4,11 +4,15 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CitaClienteComponent.css';
+import { useAuth } from '../context/AuthContext'; // Importación añadida del hook useAuth
 
 // Registrar locale español para el datepicker
 registerLocale('es', es);
 
 export const CitaClienteComponent = () => {
+  // Añadido: hook useAuth para acceder a los datos del usuario autenticado
+  const { userData } = useAuth();
+  
   const [servicios, setServicios] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [empleadoServicioMapping, setEmpleadoServicioMapping] = useState([]); // Nueva variable para almacenar asignaciones
@@ -16,7 +20,7 @@ export const CitaClienteComponent = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [currentCita, setCurrentCita] = useState({
-    idCliente: userData?.idCliente || '1',
+    idCliente: userData?.idCliente || '1', // Modificado: usar idCliente del usuario autenticado
     idEmpleado: '',
     idServicio: '',
     fechaHora: new Date(),
@@ -173,7 +177,7 @@ export const CitaClienteComponent = () => {
 
     // Crear el objeto de cita con el formato correcto para la API
     const citaData = {
-      idCliente: parseInt(currentCita.idCliente) || 1,
+      idCliente: parseInt(userData?.idCliente) || parseInt(currentCita.idCliente) || 1, // Modificado: usar idCliente del usuario autenticado
       idEmpleado: parseInt(currentCita.idEmpleado),
       idServicio: parseInt(currentCita.idServicio),
       fechaHora: currentCita.fechaHora.toISOString().slice(0, 19),
@@ -188,7 +192,7 @@ export const CitaClienteComponent = () => {
         console.log("Cita creada exitosamente:", response.data);
         setShowSuccess(true);
         setCurrentCita({
-          idCliente: '1',
+          idCliente: userData?.idCliente || '1', // Modificado: usar idCliente del usuario autenticado
           idEmpleado: '',
           idServicio: '',
           fechaHora: new Date(),
@@ -422,6 +426,12 @@ export const CitaClienteComponent = () => {
                           hour: '2-digit',
                           minute: '2-digit'
                         })}
+                      </span>
+                    </div>
+                    <div className="confirmation-item">
+                      <span className="confirmation-label">Cliente:</span>
+                      <span className="confirmation-value">
+                        {userData ? `${userData.nombreCliente} ${userData.apellidosCliente}` : 'Cliente General'}
                       </span>
                     </div>
                   </div>
