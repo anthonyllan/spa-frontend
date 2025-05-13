@@ -13,7 +13,7 @@ import InicioComponent from './components/InicioComponent';
 import { CitaClienteComponent } from './components/CitaClienteComponent';
 import InicioClienteComponent from './components/InicioClienteComponent';
 import { EmpleadoServicioComponent } from './components/EmpleadoServicioComponent';
-import LoginComponent from './components/LoginComponent'; // Nuevo componente de Login
+import LoginComponent from './components/LoginComponent';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -21,12 +21,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 function App() {
   const HomeRedirect = () => {
     const { userRole } = useAuth();
-    // Si no hay usuario autenticado, redirigir a la página de inicio pública
-    if (!userRole) {
-      return <Navigate to="/home" />;
-    }
     // Si hay usuario autenticado, redirigir según su rol
-    return userRole === 'admin' ? <Navigate to="/inicio" /> : <Navigate to="/inicio-cliente" />;
+    if (userRole) {
+      return userRole === 'admin' ? <Navigate to="/inicio" /> : <Navigate to="/inicio-cliente" />;
+    }
+    // Si no hay usuario autenticado, redirigir a login
+    return <Navigate to="/login" />;
   };
 
   return (
@@ -35,11 +35,11 @@ function App() {
         <main>
           <HeaderComponent />
           <Routes>
-            {/* Ruta principal con redirección condicional */}
+            {/* Ruta principal ahora redirecciona a login si no está autenticado */}
             <Route path="/" element={<HomeRedirect />} />
             
-            {/* Página de inicio pública */}
-            <Route path="/home" element={<InicioComponent isPublic={true} />} />
+            {/* Acceso público a inicio-cliente para usuarios no autenticados */}
+            <Route path="/home" element={<InicioClienteComponent isPublic={true} />} />
             
             {/* Ruta de login (accesible sin autenticación) */}
             <Route path="/login" element={<LoginComponent />} />
@@ -59,7 +59,7 @@ function App() {
             <Route path="/inicio-cliente" element={<ProtectedRoute allowedRoles={['cliente']}><InicioClienteComponent /></ProtectedRoute>} />
             <Route path="/cita-cliente" element={<ProtectedRoute allowedRoles={['cliente']}><CitaClienteComponent /></ProtectedRoute>} />
             
-            {/* Ruta para registro de clientes (opcional, si quieres una ruta separada) */}
+            {/* Ruta para registro de clientes */}
             <Route path="/registro" element={<LoginComponent isRegistration={true} />} />
             
             {/* Ruta de fallback para URLs no encontradas */}
