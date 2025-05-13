@@ -1,523 +1,431 @@
-/* Estilos para el componente de autenticación de Spa Divine */
+/* Nuevo diseño para el componente de login */
 
-.spa-auth-container {
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: var(--background-light);
-    padding: 0;
-    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(45deg, #f5f5f5 25%, #f0f0f0 25%, #f0f0f0 50%, #f5f5f5 50%, #f5f5f5 75%, #f0f0f0 75%, #f0f0f0);
+    background-size: 40px 40px;
   }
   
-  .spa-auth-wrapper {
-    display: flex;
-    width: 90%;
-    max-width: 1200px;
+  .login-card {
+    width: 100%;
+    max-width: 900px;
     min-height: 600px;
-    background-color: var(--background-white);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    display: flex;
+    border-radius: 16px;
     overflow: hidden;
-    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
   }
   
-  /* Sección de imagen */
-  .spa-auth-image-section {
+  /* Panel lateral con imagen */
+  .login-image-side {
     flex: 1;
-    background-image: url('https://images.unsplash.com/photo-1554244933-d876deb6b2ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+    background-image: url('https://images.unsplash.com/photo-1600334129128-685c5582fd35?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
     background-size: cover;
     background-position: center;
     position: relative;
+    min-width: 40%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
   }
   
-  .spa-auth-image-overlay {
+  .login-image-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(106, 141, 146, 0.8), rgba(226, 149, 120, 0.9));
-    padding: 3rem;
+    background: linear-gradient(to bottom, rgba(106, 141, 146, 0.85), rgba(226, 149, 120, 0.9));
+    padding: 40px;
     display: flex;
     flex-direction: column;
   }
   
-  .spa-auth-welcome {
-    font-family: var(--font-secondary);
+  .login-logo {
+    margin-bottom: auto;
+  }
+  
+  .login-logo h1 {
+    font-family: var(--font-secondary, 'Playfair Display', serif);
     font-size: 2.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    letter-spacing: 1px;
   }
   
-  .spa-auth-tagline {
-    font-family: var(--font-accent);
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
+  .login-slogan {
+    font-family: var(--font-accent, 'Dancing Script', cursive);
+    font-size: 1.3rem;
+    margin-top: 5px;
     opacity: 0.9;
-    font-style: italic;
   }
   
-  .spa-auth-features {
+  .login-benefits {
     margin-top: auto;
   }
   
-  .spa-auth-feature {
+  .login-benefit-item {
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
   }
   
-  .feature-icon {
-    width: 40px;
-    height: 40px;
+  .benefit-icon {
+    width: 45px;
+    height: 45px;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.2rem;
+    margin-right: 15px;
+    font-size: 20px;
   }
   
-  .feature-text {
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  
-  /* Sección del formulario */
-  .spa-auth-form-section {
-    flex: 1;
-    padding: 3rem 2rem;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--background-white);
-    color: var(--text-dark);
-  }
-  
-  .spa-auth-form-container {
-    max-width: 450px;
-    width: 100%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  .spa-auth-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .spa-logo-text {
-    font-family: var(--font-secondary);
-    font-size: 2rem;
-    color: var(--primary-color);
+  .benefit-text h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
     font-weight: 600;
   }
   
-  .spa-auth-tabs {
-    display: flex;
-    background-color: #e93b72;
-    border-radius: var(--border-radius-lg);
-    padding: 0.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .spa-auth-tab {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: none;
-    background: none;
-    font-family: var(--font-primary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  
-  .spa-auth-tab:not(.active) {
-    background-color: var(--secondary-color);
-    color: var(--text-dark);
-  }
-  
-  .spa-auth-tab.active {
-    background-color: var(--accent-color);
-    color: rgba(19, 182, 157, 0.256);
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .tab-icon {
-    font-size: 1.1rem;
-  }
-  
-  .spa-auth-form-wrapper {
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-  
-  .spa-auth-form-wrapper.fade-out {
-    opacity: 0;
-  }
-  
-  .spa-auth-heading {
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
-  
-  .spa-auth-heading h3 {
+  .benefit-text p {
     margin: 0;
-    font-family: var(--font-secondary);
-    font-size: 1.6rem;
-    color: var(--text-dark);
-    font-weight: 600;
+    font-size: 14px;
+    opacity: 0.8;
   }
   
-  .spa-auth-subheading {
-    color: var(--text-medium);
-    margin-top: 0.5rem;
+  /* Panel de formulario */
+  .login-form-side {
+    flex: 1;
+    padding: 40px;
+    background-color: #e8e8e8; /* Color gris pastel */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  /* Selector de modo (login/registro) */
+  .login-mode-selector {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .login-mode-option {
+    flex: 1;
+    padding: 12px 5px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    color: #888;
+    position: relative;
+    transition: color 0.3s;
+  }
+  
+  .login-mode-option.active {
+    color: var(--primary-color, #6a8d92);
+  }
+  
+  .login-mode-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color, #6a8d92);
+    border-radius: 3px 3px 0 0;
+  }
+  
+  /* Encabezado del formulario */
+  .login-form-header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  .login-form-header h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0 0 10px;
+    font-family: var(--font-secondary, 'Playfair Display', serif);
+  }
+  
+  .login-form-header p {
+    color: #666;
+    margin: 0;
     font-size: 0.95rem;
   }
   
-  .spa-auth-message {
+  /* Mensajes de error/éxito */
+  .login-message {
     display: flex;
-    align-items: flex-start;
-    padding: 1rem;
-    border-radius: var(--border-radius-md);
-    margin-bottom: 1.5rem;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     font-size: 0.9rem;
-    animation: slideIn 0.3s ease-out;
+    animation: messageSlide 0.4s ease;
   }
   
-  @keyframes slideIn {
-    from { 
-      opacity: 0; 
-      transform: translateY(-10px); 
-    }
-    to { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
+  @keyframes messageSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
-  .spa-auth-message.error {
-    background-color: rgba(221, 115, 115, 0.1);
-    color: var(--danger);
-    border-left: 4px solid var(--danger);
+  .login-message.error {
+    background-color: #fff2f2;
+    color: #e74c3c;
+    border-left: 4px solid #e74c3c;
   }
   
-  .spa-auth-message.success {
-    background-color: rgba(127, 182, 133, 0.1);
-    color: var(--success);
-    border-left: 4px solid var(--success);
+  .login-message.success {
+    background-color: #f0fff0;
+    color: #2ecc71;
+    border-left: 4px solid #2ecc71;
   }
   
   .message-icon {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    margin-right: 0.75rem;
-    font-style: normal;
-    color: white;
+    margin-right: 10px;
     font-weight: bold;
-    font-size: 14px;
-    flex-shrink: 0;
+    font-size: 12px;
   }
   
-  .spa-auth-message.error .message-icon {
-    background-color: var(--danger);
+  .login-message.error .message-icon {
+    background-color: #e74c3c;
+    color: white;
   }
   
-  .spa-auth-message.success .message-icon {
-    background-color: var(--success);
+  .login-message.success .message-icon {
+    background-color: #2ecc71;
+    color: white;
   }
   
-  .spa-auth-form {
-    margin-bottom: 1.5rem;
+  /* Formulario */
+  .login-form {
+    margin-bottom: 20px;
   }
   
-  .spa-form-group {
-    margin-bottom: 1.5rem;
+  .login-form-field {
+    margin-bottom: 20px;
   }
   
-  .spa-form-row {
+  .login-form-row {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 15px;
+    margin-bottom: 20px;
   }
   
-  .spa-form-row .spa-form-group {
+  .login-form-row .login-form-field {
     flex: 1;
     margin-bottom: 0;
   }
   
-  .spa-form-label {
+  .login-form-field label {
     display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-medium);
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
     font-weight: 600;
-    font-size: 0.9rem;
   }
   
-  .spa-input-wrapper {
+  .login-input-container {
     position: relative;
-    display: flex;
-    align-items: center;
   }
   
-  .spa-input-icon {
-    position: absolute;
-    left: 1rem;
-    font-size: 1rem;
-    color: var(--text-light);
-  }
-  
-  .spa-form-input {
+  .login-input-container input {
     width: 100%;
-    padding: 0.9rem 1rem 0.9rem 2.5rem;
-    font-size: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: var(--border-radius-md);
+    padding: 12px 15px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s;
     background-color: white;
-    transition: all 0.3s ease;
-    color: var(--text-dark);
   }
   
-  .spa-form-input::placeholder {
-    color: var(--text-light);
-  }
-  
-  .spa-form-input:focus {
+  .login-input-container input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(106, 141, 146, 0.1);
+    border-color: var(--primary-color, #6a8d92);
+    box-shadow: 0 0 0 3px rgba(106, 141, 146, 0.1);
   }
   
-  .spa-form-help {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    color: var(--text-light);
+  .login-input-container .field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
   }
   
-  .spa-auth-info {
-    background-color: rgba(242, 197, 124, 0.1);
-    border-left: 3px solid var(--warning);
-    padding: 0.75rem 1rem;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 1.5rem;
+  .field-icon.email::before {
+    content: '✉️';
   }
   
-  .spa-info-text {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--text-medium);
-    display: flex;
-    align-items: center;
+  .field-icon.password::before {
+    content: '🔒';
   }
   
-  .spa-info-icon {
-    margin-right: 0.5rem;
+  .field-icon.user::before {
+    content: '👤';
   }
   
-  /* Botón principal con color fijo */
-  .spa-auth-button {
+  /* Botón de envío */
+  .login-submit-btn {
     width: 100%;
-    padding: 1rem;
-    background-color: #e29578; /* Color coral fijo */
+    padding: 14px;
+    background-color: var(--accent-color, #e29578);
     color: white;
     border: none;
-    border-radius: var(--border-radius-md);
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(226, 149, 120, 0.2);
-    transition: none; /* Eliminar todas las transiciones */
+    transition: background-color 0.2s;
+    margin-top: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Eliminar todos los efectos de hover y active */
-  .spa-auth-button:hover {
-    background-color: #e29578; /* Mantener el mismo color */
-    transform: none;
-    box-shadow: 0 4px 8px rgba(226, 149, 120, 0.2);
+  .login-submit-btn:hover {
+    background-color: var(--accent-color-hover, #e29578);
   }
   
-  .spa-auth-button:active {
-    transform: none;
-    box-shadow: 0 4px 8px rgba(226, 149, 120, 0.2);
+  .login-submit-btn.loading {
+    color: transparent;
   }
   
-  .spa-auth-button.loading .button-text {
-    opacity: 0;
-  }
-  
-  .button-spinner {
+  .login-spinner {
     position: absolute;
-    width: 24px;
-    height: 24px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
+    border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
   }
   
-  .spa-auth-extras {
+  /* Enlaces extras */
+  .login-extra-links {
+    margin-top: 20px;
     text-align: center;
-    margin-top: 1.5rem;
   }
   
-  .spa-forgot-link {
-    color: var(--text-medium);
-    text-decoration: none;
+  .login-forgot {
+    display: block;
+    margin-bottom: 15px;
+    color: #888;
     font-size: 0.9rem;
-    transition: color 0.3s ease;
-    display: inline-block;
-    margin-bottom: 1rem;
+    text-decoration: none;
   }
   
-  .spa-forgot-link:hover {
-    color: var(--primary-color);
+  .login-forgot:hover {
+    color: var(--primary-color, #6a8d92);
     text-decoration: underline;
   }
   
-  .spa-register-cta,
-  .spa-login-cta {
-    font-size: 0.95rem;
-    color: var(--text-medium);
-    margin: 0;
+  .login-switch {
+    font-size: 0.9rem;
+    color: #666;
   }
   
-  .spa-text-button {
-    background: none;
-    border: none;
-    color: var(--primary-color);
+  .login-switch span {
+    color: var(--primary-color, #6a8d92);
     font-weight: 600;
     cursor: pointer;
-    padding: 0;
-    font-size: 0.95rem;
-    transition: color 0.3s ease;
+    transition: color 0.2s;
   }
   
-  .spa-text-button:hover {
-    color: #5a7a7e;
+  .login-switch span:hover {
+    color: var(--primary-color-darker, #5a7a7e);
     text-decoration: underline;
   }
   
-  .spa-auth-footer {
+  /* Política de privacidad */
+  .login-policy {
+    margin: 20px 0;
+    font-size: 0.8rem;
+    text-align: center;
+    color: #888;
+  }
+  
+  .login-policy a {
+    color: var(--primary-color, #6a8d92);
+    text-decoration: none;
+  }
+  
+  .login-policy a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Footer */
+  .login-footer {
     margin-top: auto;
     text-align: center;
-    color: var(--text-light);
     font-size: 0.8rem;
-    padding-top: 2rem;
-  }
-  
-  .spa-auth-footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 0.5rem;
-  }
-  
-  .spa-auth-footer-links a {
-    color: var(--text-light);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .spa-auth-footer-links a:hover {
-    color: var(--primary-color);
+    color: #999;
   }
   
   /* Responsive */
-  @media (max-width: 992px) {
-    .spa-auth-wrapper {
+  @media (max-width: 768px) {
+    .login-card {
       flex-direction: column;
-      width: 95%;
-      min-height: auto;
     }
     
-    .spa-auth-image-section {
-      height: 240px;
+    .login-image-side {
+      min-height: 250px;
+      min-width: auto;
     }
     
-    .spa-auth-image-overlay {
-      padding: 1.5rem;
+    .login-benefits {
+      display: none;
     }
     
-    .spa-auth-welcome {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+    .login-form-side {
+      padding: 30px 20px;
     }
     
-    .spa-auth-tagline {
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-    
-    .spa-auth-features {
-      display: none; /* Ocultar características en móvil para ahorrar espacio */
-    }
-    
-    .spa-auth-form-section {
-      padding: 1.5rem;
-    }
-    
-    .spa-form-row {
+    .login-form-row {
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 20px;
     }
   }
   
-  @media (max-width: 576px) {
-    .spa-auth-wrapper {
-      width: 100%;
-      margin: 0;
-      min-height: 100vh;
-      border-radius: 0;
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 10px;
     }
     
-    .spa-auth-image-section {
-      height: 180px;
+    .login-card {
+      min-height: auto;
+      border-radius: 10px;
     }
     
-    .spa-auth-welcome {
+    .login-image-side {
+      min-height: 180px;
+    }
+    
+    .login-logo h1 {
+      font-size: 2rem;
+    }
+    
+    .login-form-header h2 {
       font-size: 1.5rem;
-    }
-    
-    .spa-auth-form-section {
-      padding: 1.5rem 1rem;
-    }
-    
-    .spa-auth-tabs .tab-text {
-      font-size: 0.85rem;
-    }
-    
-    .spa-auth-button {
-      padding: 0.8rem;
     }
   }
