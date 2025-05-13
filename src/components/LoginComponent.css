@@ -156,7 +156,7 @@
   
   .spa-auth-tab.active {
     background-color: var(--accent-color);
-    color: white;
+    color: rgba(19, 182, 157, 0.256);
     box-shadow: var(--shadow-sm);
   }
   
